@@ -1,0 +1,157 @@
+(count-change 11)
+(cc 11 5)
+         |(+ (cc 11
+         |      4
+         |   )
+         |         |(+ (cc 11
+         |         |       3
+         |         |   )
+         |         |         |(+ (cc 11
+         |         |         |      2
+         |         |         |   )
+         |         |         |         |(+ (cc 11
+         |         |         |         |       1
+         |         |         |         |   )
+         |         |         |         |         |(+ (cc 11
+         |         |         |         |         |       0
+         |         |         |         |         |   )
+         |         |         |         |         |         |0
+         |         |         |         |         |
+         |         |         |         |         |   (cc (- 11 1)
+         |         |         |         |         |       1
+         |         |         |         |         |   )
+         |         |         |         |         |               |(+ (cc 10
+         |         |         |         |         |               |       0
+         |         |         |         |         |               |   )
+         |         |         |         |         |               |         |0
+         |         |         |         |         |               |
+         |         |         |         |         |               |   (cc (- 10 1)
+         |         |         |         |         |               |       1
+         |         |         |         |         |               |   )
+         |         |         |         |         |               |               |...1 as (cc n 1) evaluates to 1 in n steps
+         |         |         |         |         |               |)
+         |         |         |         |         |)
+         |         |         |         |
+         |         |         |         |   (cc (- 11 5)
+         |         |         |         |       2
+         |         |         |         |   )
+         |         |         |         |               |(+ (cc 6
+         |         |         |         |               |       1
+         |         |         |         |               |   )
+         |         |         |         |               |        |(+ (cc 6
+         |         |         |         |               |        |       0
+         |         |         |         |               |        |   )
+         |         |         |         |               |        |        |0
+         |         |         |         |               |        |   
+         |         |         |         |               |        |   (cc (- 6 1)
+         |         |         |         |               |        |       1
+         |         |         |         |               |        |   )
+         |         |         |         |               |        |              |(+ (cc 5
+         |         |         |         |               |        |              |       0
+         |         |         |         |               |        |              |   )
+         |         |         |         |               |        |              |        |0
+         |         |         |         |               |        |              |
+         |         |         |         |               |        |              |   (cc (- 5 1)
+         |         |         |         |               |        |              |       1
+         |         |         |         |               |        |              |              |(+ (cc 4
+         |         |         |         |               |        |              |              |       0
+         |         |         |         |               |        |              |              |   )
+         |         |         |         |               |        |              |              |        |0
+         |         |         |         |               |        |              |              |
+         |         |         |         |               |        |              |              |   (cc 4
+         |         |         |         |               |        |              |              |       1
+         |         |         |         |               |        |              |              |   )
+         |         |         |         |               |        |              |              |        |...1 as (cc n 1) evaluates to 1 in n steps
+         |         |         |         |               |        |              |              |)
+         |         |         |         |               |        |              |   )
+         |         |         |         |               |        |              |)
+         |         |         |         |               |        |)
+         |         |         |         |               |   
+         |         |         |         |               |   (cc (- 6 5)
+         |         |         |         |               |       2
+         |         |         |         |               |   )
+         |         |         |         |               |              |(+ (cc 1
+         |         |         |         |               |              |       1
+         |         |         |         |               |              |   )
+         |         |         |         |               |              |        |(+ (cc 1
+         |         |         |         |               |              |        |       0
+         |         |         |         |               |              |        |   )
+         |         |         |         |               |              |        |        |0
+         |         |         |         |               |              |        |
+         |         |         |         |               |              |        |   (cc (- 1 1)
+         |         |         |         |               |              |        |       1
+         |         |         |         |               |              |        |   )
+         |         |         |         |               |              |        |              |1
+         |         |         |         |               |              |        |)
+         |         |         |         |               |              |
+         |         |         |         |               |              |   (cc (- 1 5)
+         |         |         |         |               |              |       2
+         |         |         |         |               |              |   )
+         |         |         |         |               |              |              |0
+         |         |         |         |               |              |)
+         |         |         |         |               |)
+         |         |         |         |)
+         |         |         |
+         |         |         |   (cc (- 11 10)
+         |         |         |       3
+         |         |         |   )
+         |         |         |                |(+ (cc 1
+         |         |         |                |      2
+         |         |         |                |   )
+         |         |         |                |        |(+ (cc 1
+         |         |         |                |        |       1
+         |         |         |                |        |   )
+         |         |         |                |        |        |(+ (cc 1
+         |         |         |                |        |        |       0
+         |         |         |                |        |        |   )
+         |         |         |                |        |        |        |0
+         |         |         |                |        |        |
+         |         |         |                |        |        |   (cc (- 1 1)
+         |         |         |                |        |        |       1
+         |         |         |                |        |        |   )
+         |         |         |                |        |        |              |1
+         |         |         |                |        |        |)
+         |         |         |                |        |
+         |         |         |                |        |   (cc (- 1 5)
+         |         |         |                |        |       2
+         |         |         |                |        |   )
+         |         |         |                |        |              |0
+         |         |         |                |        |)
+         |         |         |                |
+         |         |         |                |  (cc (- 1 10)
+         |         |         |                |      3
+         |         |         |                |  )
+         |         |         |                |              |0
+         |         |         |                |)
+         |         |         |)
+         |         |
+         |         |   (cc (- 11 25)
+         |         |       4
+         |         |   )
+         |         |                |0
+         |         |)
+         |
+         |   (cc (- 11 50)
+         |       5
+         |   )
+         |                |0
+         |)
+
+so all in all, this yields 4 ways to change 11 cents
+parsing through this tree, we can list these as
+DP
+NPPPPPP
+NNP
+PPPPPPPPPPP
+
+formally the process works like this
+fix some list l of n coins with varying values, e.g. 50,25,10,5,1
+(cc a n) satisfies the recurrence (cc a l) = (cc a l[1:]) + (cc (a - l[0]) l)
+here we are using the python list syntx l[1:] = [l[1], l[2], ..., l[n - 1]]
+the time complexity T and memory complexity M depend only on the size of l, so long as we treat basic arithmetic and shit as constant
+then T satisfies T(a, n) <= T(a, n - 1) + T(a - 1, n)
+here we use a - 1 for simplicity, as the slowest way for the a coordinate to decrease is to be one at a time. really, it goes like a, a - l[0], a - l[0] - l[1], etc
+so roughly, T(a, n) grows like C(a + n, a) = (a+n)! / (a! n!)
+we usually take n = 5 so this is roughly (a + 5)! / (5! a!) = (a+5)(a+5)(a+3)(a+2)(a+1) = θ(a^5)
+as for memory, the largest branch of this tree will be when the program figures out the all penny approach: (cc n 1) = (cc (- n d) 1) + (cc n 0) ... so this terminates with 1 after around n/d steps, where d = l[n - 1], so 1 in this special case.
+at any point in this computation, the interpreter need only keep track of the whole path back to the root. the longest such path is θ(n)

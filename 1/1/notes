@@ -1,0 +1,71 @@
+interpeter begins by reading the expression, evaluating, printing the result, and repeating
+    e.g. (+ 1 1) is read and evalauted as a primitive, then 2 is printed
+    a more complex expression like (* (+ 1 1) 2) will be read ane evaluted. along the lines of evaluation, (+ 1 1) will be evaluated at some point (more on this later), and it will subsequently print 2. hence, after the first repl (???????), the interpreter will read this as (* 2 2). it will then repl again, and since this is primitive, it will simply give print 4
+
+evaluation of a combination (f t_1, ..., t_n) is done by evaluating all subexpressions, f and the t_i, then evaluating f (the operator) to the t_i (the operands)
+    some things are special, like define and if
+
+compound procedures (those defined in terms of other previously defined procedures) are thought of as being evaluated recursively by substitution
+    to evaluate (f t_1 ... t_n) you evalute the body of f (per its (define f var_1 ... var_n) block) and substitute the t_i for the var_i
+
+    in reality, literal string manipulation is not how it's done
+
+applicative vs normal order
+    we have a choice in the order of evaluation of combinations like (f t_1 ... t_n). we could evaluate the operator and the operands, then applying the evaluated procedure to the evaluated arguments. this is called "applicative order evaluation"
+        (f 5)
+        (sum-of-squares (+ 5 1) (* 5 2))
+        (+ (square 6) (square 10))
+        (+ (* 6 6) (* 10 10))
+        (+ 36 100)
+        136
+    but we could also wait to evaluate the operands t_i until the very end when they are needed - "normal order evaluation"
+        (f 5)
+        (sum-of-squares (+ 5 1) (* 5 2))
+        (+ (square (+ 5 1)) (square (* 5 2)))
+        (+ (* (+ 5 1) (+ 5 1)) (* (* 5 2) (* 5 2)))
+        (+ (* 6 6) (* 10 10))
+        (+ 36 100)
+        136
+    normal is fully expand then reduce and applicative is expand reduce expand reduce ...
+
+    note that in normal order some expressions like (* 5 2) are evalauted twice, as opposed to applicative order, so the interpreter does things applicatively for the efficiency
+
+when one procedure calls another, the subprocedure's implementation should be irrelevant to the main procedure. it should be an abstract black box - this allows for a high level view of the main procedure in terms of subprocedures whose implementation can be thought of later
+
+in a definition (define square x), the variable x should not be taken permanently, and it should make no difference if we call it x, y, blah, bitch, etc. hence, the interpreter must understand that the name x only refers to it in the "scope" of the definition
+    a definition binds a name, and the "scope" of a name is the expressions in which it is bound
+
+subprocedures can be defined locally within a procedure definition (block structure)
+    (define (sqrt x)
+            (define (good-enough? guess x)
+                    (< (abs (- (square guess) x)) 0.001)
+            )
+            (define (improve guess x)
+                    (average guess (/ x guess))
+            )
+            (define (sqrt-iter guess x)
+                    (if (good-enough? guess x)
+                        guess
+                        (sqrt-iter (improve guess x) x))
+            )
+              (sqrt-iter 1.0 x)
+    )
+
+    the definition of sqrt binds x, and its scope is this whole definition. this means that we need not pass x to these subprocedures - x can be free in them and its value will be determined by whatever sqrt is called with, eg (sqrt 5)
+
+    (define (sqrt x)
+            (define (good-enough? guess)
+                    (< (abs (- (square guess) x)) 0.001)
+            )
+            (define (improve guess)
+                    (average guess (/ x guess))
+            )
+            (define (sqrt-iter guess)
+                    (if (good-enough? guess)
+                        guess
+                        (sqrt-iter (improve guess)))
+            )
+              (sqrt-iter 1.0)
+    )
+    
+    when you call (sqrt 5), every free reference to x in the subprocedures is substituted by 5

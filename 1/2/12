@@ -1,0 +1,10 @@
+(define (pascal n k) ; n is the row, k is the column
+        (cond ((= 0 n) 1)
+              ((= 0 k) 1)
+              ((= n k) 1)
+              (else (+ (pascal (- n 1) k)
+                         (pascal (- n 1) (- k 1)) 
+                    )
+              )
+        )
+)

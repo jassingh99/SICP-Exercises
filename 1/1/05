@@ -1,0 +1,22 @@
+(define (p) (p))
+
+(define (test x y)
+  (if (= x 0)
+      0
+      y
+  )
+)
+
+(test 0 (p))
+
+; this is meant to determine applicative vs normal order evaluation
+; recall that normal means to fully expand then reduce, whereas applicative means to evaluate the operator and operands at every step
+; if the procedure p is evaluated, the interpreter will proceed by evaluating p, so we get stuck in recursion
+
+; suppose we are in normal order evaluation. then when evaluating (test 0 (p)), the interpreter will replace test with the above definition and replace x with 0 and y with p
+; so the next step is (if (= 0 0) 0 (p))
+; the interpreter then says that the predicate (= 0 0) is true so it evaluates the consequent, which is the primitive expression 0. thus, (test 0 (p)) will evaluate to 0.
+
+; now, if we were in applicative order, the interpreter would still evaluate test as defined above, but it would also evaluate the operands 0 (which simply evaluates to 0) and (p). as discussed above, evaluating (p) leads the interpreter to an infinite recursion. evaluating (p) forces it to evaluate (p), which in turn requires evaluating (p), and so on forever. thus, the interpreter will never be able to proceed to the next step of the computation
+
+; note: technically it is impossible to use this test to determine if we are in applicative order! no matter how long we wait, it is possible that the interpreter is simply so slow that it is taking that long to evaluate, for instance, the test procedure to its above definition. in other words, no matter how long we wait, we will never know if this procedure will evaluate to 0 after waiting just a bit longer.

@@ -1,0 +1,42 @@
+(define (inc n)
+        (+ n 1)
+)
+
+(define (dec n)
+        (- n 1)
+)
+
+(define (plus1 a b)
+        (if (= a 0)
+            b
+            (inc (plus1 (dec a)
+                        b
+                 )
+            )
+        )
+)
+
+(define (plus2 a b)
+        (if (= a 0)
+            b
+            (plus2 (dec a)
+                   (inc b)    
+            )
+        )
+)
+
+let's trace something simple like (+ 2 2)
+
+(plus1 2 2)
+(+ 1 (plus1 1 2))
+(+ 1 (+ 1 (plus1 0 2)))
+(+ 1 (+ 1 2))
+(+ 1 3)
+4
+
+(plus2 2 2)
+(plus2 1 3)
+(plus2 0 4)
+4
+
+so plus1 is a linear recursive process while plus2 is linear iterative: plus1 must keep track of the "depth" whereas plus2 contains its whole state in the arguments

@@ -1,0 +1,7 @@
+(define (a-plus-abs-b a b)
+  ((if (> b 0) + -) a b))
+
+; when evaluating this function on arguments a and b, it will first check if b > 0
+; if so, the operator is +
+; else, it is -
+; whatever operator the previous part returns is applied to "a b"

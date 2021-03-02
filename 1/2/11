@@ -1,0 +1,25 @@
+recursive procedure:
+(define (f n)
+        (if (< n 3)
+            n
+            (+ (f (- n 1))
+               (* 2 (f (- n 2)))
+               (* 3 (f (- n 3)))
+            )
+        )
+)
+
+iterative procedure:
+(define (f a b c n)
+        (if (= 0 n)
+            a
+            (f b
+               c
+               (+ c
+                  (* 2 b)
+                  (* 3 a)
+               )
+               (- n 1)
+            )
+        )
+)

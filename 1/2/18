@@ -1,0 +1,33 @@
+(define (mult-iter a b c)
+  	    (cond ( (= b 0)
+		        c
+		      )
+              ( (even? b)
+                (mult-iter (double a)
+                           (halve b)
+                           c
+                        
+                )
+              )
+              ( else
+                (mult-iter a
+                           (- b 1)
+                           (+ c a)
+                )              
+              )
+		)
+)
+
+(define (mult a b)
+		(mult-iter a b 0)
+)
+
+e.g.
+
+(mult-iter 4 3 0)
+(mult-iter 4 2 4)
+(mult-iter 8 1 4)
+(mult-iter 8 0 12)
+12
+
+\theta(log b) time, \theta(1) memory
