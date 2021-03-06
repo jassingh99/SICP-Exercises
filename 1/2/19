@@ -1,0 +1,9 @@
+|0 1||F_n    | = |F_{n + 1}|
+|1 1||F_{n+1}|   |F_{n + 2}|
+
+therefore
+
+|0 1|^n|0| = |F_n    |
+|1 1|  |1|   |F_{n+1}|
+
+thus the usual exponentiation by squaring - be it recursive (./17) or iterative (./18) yields a computation of F_n is θ(log n), assuming again that arithmetic is constant

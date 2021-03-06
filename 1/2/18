@@ -22,6 +22,8 @@
 		(mult-iter a b 0)
 )
 
+the quantity ab + c is invariant in the above
+
 e.g.
 
 (mult-iter 4 3 0)
