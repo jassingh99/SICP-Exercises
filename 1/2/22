@@ -1,0 +1,53 @@
+(define (divides? a n)
+        ( = (remainder n a)
+            0
+        )
+)
+
+(define (smallest-divisor n)
+        (define (test i)
+                (cond ( (> (* i i) n)
+                        n
+                      )
+                      ( (divides? i n)
+                        i
+                      )
+                      ( else
+                        (test (+ i 1))
+                      )
+                )
+        )
+
+        (test 2)
+)
+
+(define (prime? n)
+        (= (smallest-divisor n) n)
+)
+
+(define (timed-prime-test n)
+        (newline)
+        (display n)
+        (define (start-timed-prime-test n start-time)
+                (if (prime? n)
+                    (report-prime (- (runtime) start-time))
+		    (report-composite (- (runtime) start-time))
+                )
+        )
+	(start-timed-prime-test n (runtime))
+)
+
+(define (report-prime elapsed-time)
+	(display " **PRIME** ")
+	(display elapsed-time)
+)  
+
+(define (report-composite elapsed-time)
+	(display " **COMPOSITE** ")
+	(display elapsed-time)
+)
+
+(timed-prime-test (* 1000000016531 1000000016531))
+
+
+
