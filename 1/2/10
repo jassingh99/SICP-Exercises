@@ -17,32 +17,31 @@
 
 (define (k n) (* 5 n n))
 
-(f n)
-    (A 0 n)
-    (* 2 n)
-    2n
-
-(g n)
-    (A 1 n)
-    (A 0 (A 1 (- n 1)))
-    (* 2 (g (- n 1)))
-    so g satisfies the g(n) = 2 g(n - 1). furthermore,
-    (g 1)
-    (A 1 1)
-    2
-    so we have g(n) = 2^n
-
-(h n)
-    (A 2 n)
-    (A 1 (A 2 (- n 1)))
-    (g (h (- n 1)))
-    so h satisfies h(n) = g(h(n - 1)) = 2^(h(n - 1))
-    furthermore,
-    (h 1)
-    (A 2 1)
-    2
-    so h(n) = 2↑↑n
-(k n)
-    (* 5 n n)
-    k(n) = 5n^2
-
+; (f n)
+;     (A 0 n)
+;     (* 2 n)
+;     2n
+; 
+; (g n)
+;     (A 1 n)
+;     (A 0 (A 1 (- n 1)))
+;     (* 2 (g (- n 1)))
+;     so g satisfies the g(n) = 2 g(n - 1). furthermore,
+;     (g 1)
+;     (A 1 1)
+;     2
+;     so we have g(n) = 2^n
+; 
+; (h n)
+;     (A 2 n)
+;     (A 1 (A 2 (- n 1)))
+;     (g (h (- n 1)))
+;     so h satisfies h(n) = g(h(n - 1)) = 2^(h(n - 1))
+;     furthermore,
+;     (h 1)
+;     (A 2 1)
+;     2
+;     so h(n) = 2↑↑n
+; (k n)
+;     (* 5 n n)
+;     k(n) = 5n^2

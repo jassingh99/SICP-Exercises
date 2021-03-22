@@ -1,0 +1,109 @@
+(define (even? n)
+        (= (remainder n 2) 0)
+)
+
+(define (square x)
+        (* x x)
+)
+
+; exponentiation by squaring where you mod out by m after every stage
+; additionally, if this finds a nontrivial sqrt of 1 mod n, it will return 0
+; here we are only interested in evaluating this on 0 < base < m and exp = m
+; we are trying to compute a^{m - 1} mod m for all 0 < a < m
+; if a^{m - 1} = 0 mod m then by fermat's little theorem it cannot be primes
+; if a is a nontrivial sqrt of 1 in Z/m then m cannot be prime either
+; hence, if (signal-expmod a (- m 1) m) = 0 for 0 < a < m we know that m is composite
+(define (signal-expmod base exp m)
+
+        ; returns 0 if check is a nontrivial sqrt of 1
+        ; else returns the square of check modulo m
+        ; we presume here that check is already reduced modulo m to [0, m-1]
+        (define (test-trivial-sqrt check)
+                (define check-square
+                        (remainder (square check)
+                                   m
+                        )
+                )
+                (cond ( (= check 1)
+                        check-square
+                      )
+                      ( (= check (- m 1))
+                        check-square
+                      )
+
+                      ; in this case, check is not +-1 mod m but its square is 1
+                      ( (= check-square 1)
+                        0
+                      )
+                      ( else
+                        check-square
+                      )
+                )
+        )
+
+        (cond ( (= exp 0)
+                1
+              )
+              ( (even? exp)
+                ; checks if base^{exp/2} is a nontrivial sqrt of 1 mod m
+                (test-trivial-sqrt (signal-expmod base
+                                           (/ exp 2)
+                                           m
+                                   )
+                )
+              )
+              ( else
+                (remainder (* base
+                              (signal-expmod base
+                                      (- exp 1)
+                                      m
+                              )
+                           )
+                           m
+                )
+              )
+        )
+)
+
+; per sicp, if we have an odd number n that is not prime, then at least half of 0 < a < n wil get us (signal-expmod a (- n 1) n) = 0
+; this is a complete lie - take n = 9. there are no nontrivial sqrts of 1 mod 9, and only 3, 6 actually exponentiate to 0 mod 9
+; wikipedia says that the probability that a composite n is declared prime after k iterations of this is at most 4^{-k}
+; see [here](https://kconrad.math.uconn.edu/blurbs/ugradnumthy/millerrabin.pdf) for a Keith Conrad explanation that's actually correct (well probably, i didnt check yet)
+; this does show that if n > 1 is odd and composite we write n - 1 = 2^e k. then over 50% of 1 < a < n - 1 are "Miller-Robin Witnesses", i.e. a^k =/= 1 mod n and a^{2^i k} =/= -1 mod n for all 0 <= i <= e - 1
+; in any case, I'll write this up for the faulty one given in the book
+(define (random-miller-rabin-test n times)
+	    (define (attempt a)
+                (define check
+                        (signal-expmod a
+                                       (- n 1)
+                                       n
+                        )
+                )
+                ; if a^{n - 1} = 1 mod n then we have evidence of primality
+                ; also, if signal-expmod doesn't return 0, we also have evidence of primality
+                (= check 1)
+        )
+
+        (cond ( (even? n)
+                false
+              )
+              ( (= times 0)
+                true
+              )
+              ; tries some random guy between 2 and n - 2
+              ( (attempt (+ 2
+                            (random (- n 3))
+                         )
+                )
+                (random-miller-rabin-test n (- times 1))
+              )
+              ( else
+                false
+              )              
+        )
+)
+
+
+
+
+

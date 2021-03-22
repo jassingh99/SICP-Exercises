@@ -2,12 +2,16 @@
         (= (remainder n 2) 0)
 )
 
+(define (square x)
+        (* x x)
+)
+
 (define (exp-iter b n a)
         (cond ( (= n 0)
                 a
               )
               ( (even? n)
-                (exp-iter (* b b)
+                (exp-iter (square b)
                           (/ n 2)
                           a
                 )
@@ -25,13 +29,13 @@
         (exp-iter b n 1)
 )    
 
-e.g.
-(exp-iter 3 7 1)
-(exp-iter 3 6 3)
-(exp-iter 9 3 3)
-(exp-iter 9 2 27)
-(exp-iter 81 1 27)
-(exp-iter 81 0 2187)
-2187
-
-this is \theta(log n) time and \theta(1) memory 
+; e.g.
+; (exp-iter 3 7 1)
+; (exp-iter 3 6 3)
+; (exp-iter 9 3 3)
+; (exp-iter 9 2 27)
+; (exp-iter 81 1 27)
+; (exp-iter 81 0 2187)
+; 2187
+; 
+; this is \theta(log n) time and \theta(1) memory 

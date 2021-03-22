@@ -25,21 +25,21 @@
         )
 )
 
-a. to compute (sine 12.15) we proceed as follows:
-(sine 12.15)
-(p (sine 4.05))
-(p (p (sine 1.35)))
-(p (p (p (sine 0.45))))
-(p (p (p (p (sine 0.15)))))
-(p (p (p (p (p (sine 0.05))))))
-(p (p (p (p (p 0.05)))))
-etc
-
-so p is called 5 times
-
-b. in general, consider (sine a). a/3^n < 0.1 iff 10a < 3^n iff log_3(10a) < n
-hence, p is called ceil(log_3(10a)) many times. eg for a = 12.5, this is indeed 5
-
-i'll pretend arithmetic is constant in the input, so in particular evaluating p is constant in memory and time
-
-we see therefore that T(a) = θ(log a) and M(a) = θ(log a) as well, as the interpreter basically just has to keep track of how many p's have already been called.
+; a. to compute (sine 12.15) we proceed as follows:
+; (sine 12.15)
+; (p (sine 4.05))
+; (p (p (sine 1.35)))
+; (p (p (p (sine 0.45))))
+; (p (p (p (p (sine 0.15)))))
+; (p (p (p (p (p (sine 0.05))))))
+; (p (p (p (p (p 0.05)))))
+; etc
+; 
+; so p is called 5 times
+; 
+; b. in general, consider (sine a). a/3^n < 0.1 iff 10a < 3^n iff log_3(10a) < n
+; hence, p is called ceil(log_3(10a)) many times. eg for a = 12.5, this is indeed 5
+; 
+; i'll pretend arithmetic is constant in the input, so in particular evaluating p is constant in memory and time
+; 
+; we see therefore that T(a) = θ(log a) and M(a) = θ(log a) as well, as the interpreter basically just has to keep track of how many p's have already been called.

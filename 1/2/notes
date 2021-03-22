@@ -1,0 +1,34 @@
+this is largely about specific examples
+
+there are two major classes of algorithms here - recursive processes and iterative processes
+    a recursive process comes from "a chain of deferred operations"
+    the function calls itself on some smaller input, and finitely many applications reach a base case
+    the interpreter must keep track of where in the computation it is
+    in contrast, an iterative process does not require the interpreter to know where in the computation it is - all of the information is held in the state
+
+    consider the fibonacci numbers, computed as follows:
+        fib(n) = fib(n - 1) + fib(n - 1) with base case fib(0) = 0, fib(1) = 1
+        this is a (tree) recursive process - the tree of computations has exponentially many nodes and the maximum depth (hence the memory needed) grows linearly with n
+            see [this picture](file:///home/jas/Documents/Textbooks/Programming/Structure%20and%20Interpretation%20of%20Computer%20Programs/ch1-Z-G-13.gif)
+
+        in contrast, we can have fib(a, b, n) |--> fib(b, a + b, n - 1) until n = 0
+            this is much faster (linear) and only needs constant memory
+
+we introduced exponentiation by squaring
+    to compute b^n, we compute (b^{n/2})^2 if n is even or b^{n - 1} * b if n is odd
+    this needs only \theta(log n) many multiplications
+
+    this section also introduced the notion of an invariant quantity for designing iterative processes
+        take exponentiation, without squaring for simplicity
+            (define (exp b n)
+                    (if (= n 0)
+                        1
+                        (* b
+                           (exp b (- n 1))
+                        )
+                    )
+            )
+        which is linear recursive. an iterative algorithm to compute this can be described via the transformation (b, n, prod) |--> (b, n - 1,  * prod). the product b^{n} * prod is invariant under this transformation. we start out with prod = 1, so that after n steps the tuple looks like (b, 0, prod). then by invariance, b^0 * prod = b^n * 1 so prod = b^n.
+        this is iterative because the state tuple and the iteration map are all we need to do this computation at any point. we chose it so that the quantity in question was invariant. see for instance 1.16 for another example of an iterative algorithm that heavily uses the notion of an invariant quantity.
+
+there were also gcd and primality things, see the exercises.

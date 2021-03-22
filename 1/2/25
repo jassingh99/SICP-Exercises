@@ -1,0 +1,10 @@
+Alyssa would be correct in the ideal world where all basic arithmetic is the same constant time and memory as all other basic arithmetic. Unfortunately, this is obviously false.
+
+Consider the process of finding 2^1000000000000000000000 mod 2. The correctly written expmod will go like this:
+compute 2^2 mod 2 as 0
+compute 0^2 mod 2 as 0
+compute 0^2 mod 2 as 0
+...
+until we have to not square, blah blah
+
+Point is, this is very quick and requires very little memory because we are doing arithmetic on small numbers. Alyssa's approach would require computing that whole enormous number first before taking anything mod 2. if the exponent is large enough, this will take very long, even with squaring, and use a lot of memory.

@@ -1,0 +1,66 @@
+When the interpreter sees an expression like (f t_1 ... t_n) that it wants to evaluate, it will evaluate the operator f and the operands t_i, then apply the evaluated operator to the evalauted operands. For instance, (* a b) will be evaluated by evaluating a and b, the multiplying their result. Thus, evaluating (* b b) requires evaluating b twice!
+
+In contrast, consider (square b). The interpreter will evaluate b to some value, evaluate square as (* x x), then apply (* x x) to whatever b evaluates to. Notably, it only computes the value of b a single time. This is because scheme uses applicative order evaluation as opposed to normal order evaluation, which defers evaluation of operands until the very end.
+
+Indeed, in normal order evaluation, evaluating (square b) would look like
+(square b)
+(* b b)
+(* (eval b) (eval b))
+so we'd have to evalaute twice, but applicative order evaluation lets us remove this redundancy and only evaluate b once. If b is passed as a literal number like 5, this makes no difference. However, when computing b is costly, as it is in this case, this adds up.
+
+The above explains what Louis did wrong abstractly, but Eva told Louis precisely that this incorrect expmod is \theta(n) as opposed to the \theta(log n) it should be. Let's consider this.
+
+The same issue occurs if the square in exp is replaced with direct multiplication, so we work with exp directly instead of expmod purely to avoid having to write remainder a bunch.
+
+Recall the correct form of exponentiation by squaring (using recursion, not iteration, for simplicity) is the following:
+
+(define (fast-exp b n)
+        (cond ( (= n 0)
+                1
+              )
+              ( (even? n)
+                (square (fast-exp b
+                                  (/ n 2)
+                        )
+                )
+              )
+              ( else
+                (* b
+                   (fast-exp b
+                             (- n 1)
+                   )
+                )
+              )
+        )
+)
+
+Let's analyze this formally, letting T(n) be the number of multiplications to evaluate b^n for b fixed. The above computes b^(2n) by computing b^n then squaring it. Computing b^n requires T(n) steps, an the squaring adds one. Hence, we get the relation T(2n) = T(n) + 1. Hence, T(n) = \theta(log n)
+
+Consider now the faulty version
+
+(define (fast-exp b n)
+        (cond ( (= n 0)
+                1
+              )
+              ( (even? n)
+                (* (fast-exp b
+                             (/ n 2)
+                   )
+                   (fast-exp b
+                             (/ n 2)
+                   )
+                )
+              )
+              ( else
+                (* b
+                   (fast-exp b
+                             (- n 1)
+                   )
+                )
+              )
+        )
+)
+
+If we used this to compute b^(2n), we'd compute b^n twice then multiply the results. Each individual computation of b^n takes T(n) multiplications. Hence, T(2n) = 2 T(n) + 1. Thus, T(n) = \theta(n).
+
+Thank you applicative order evaluation!

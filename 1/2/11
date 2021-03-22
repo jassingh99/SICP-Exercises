@@ -1,4 +1,4 @@
-recursive procedure:
+; recursive procedure:
 (define (f n)
         (if (< n 3)
             n
@@ -9,7 +9,7 @@ recursive procedure:
         )
 )
 
-iterative procedure:
+; iterative procedure:
 (define (f a b c n)
         (if (= 0 n)
             a

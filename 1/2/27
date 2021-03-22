@@ -1,0 +1,64 @@
+(define (even? n)
+        (= (remainder n 2) 0)
+)
+
+(define (square x)
+        (* x x)
+)
+
+; exponentiation by squaring where you mod out by m after every stage
+(define (expmod base exp m)
+        (cond ( (= exp 0)
+                1
+              )
+              ( (even? exp)
+                (remainder (square (expmod base
+                                           (/ exp 2)
+                                           m
+                                   )
+                           )
+                           m
+                )
+              )
+              ( else
+                (remainder (* base
+                              (expmod base
+                                      (- exp 1)
+                                      m
+                              )
+                           )
+                           m
+                )
+              )
+        )
+)
+
+(define (carmichael-test n)
+        (define (fermat-attempt a)
+                ( = (expmod a n n)
+                    a
+                )
+        )
+
+        (define (carmichael-iter current)
+                (cond ( (= n current)
+                        true
+                      )
+                      ( (fermat-attempt current)
+                        (carmichael-iter (+ current 1))
+                      )
+                      ( else
+                        false
+                      )
+                )
+        )
+
+        (carmichael-iter 0)
+)
+
+(carmichael-test 561)
+(carmichael-test 1105)
+(carmichael-test 1729)
+(carmichael-test 2465)
+(carmichael-test 2821)
+(carmichael-test 6601)

@@ -1,0 +1,124 @@
+(define (divides? a n)
+        ( = (remainder n a)
+            0
+        )
+)
+
+(define (smallest-divisor n)
+        (define (next check)
+                (cond ( (= check 2)
+                        3
+                      )
+                      ( else
+                        (+ check 2)
+                      )
+                )
+        )
+        
+        (define (test i)
+                (cond ( (> (* i i) n)
+                        n
+                      )
+                      ( (divides? i n)
+                        i
+                      )
+                      ( else
+                        (test (next i))
+                      )
+                )
+        )
+
+        (test 2)
+)
+
+(define (prime? n)
+        (and (= (smallest-divisor n) n) (> n 1))
+)
+
+(define (timed-prime-test n)
+        (define (report-prime elapsed-time)
+        	(display " **PRIME** ")
+        	(display elapsed-time)
+        )  
+        (define (report-composite elapsed-time)
+        	(display " **COMPOSITE** ")
+        	(display elapsed-time)
+        )
+
+        (newline)
+        (display n)
+        (define (start-timed-prime-test n start-time)
+                (if (prime? n)
+                    (report-prime (- (runtime) start-time))
+		            (report-composite (- (runtime) start-time))
+                )
+        )
+	(start-timed-prime-test n (runtime))
+)
+
+
+;(timed-prime-test 1000000016531)
+
+;(timed-prime-test (* 141650939 314606869))
+
+(define (search-for-primes lower upper)
+        (define (search-iter i)
+                (timed-prime-test i)
+                (if (= i upper)
+                    (newline)
+                    (search-iter (+ i 2))
+                )
+
+        )
+	(define prev (runtime))
+	(search-iter lower)
+	(newline)
+	(display "*** ELAPSED RUNTIME ***")
+	(newline)
+	(display (- (runtime) prev))
+)
+
+(search-for-primes 1001 1101)
+; old elapsed runtime was 0.
+; new elapsed runtime is 0.
+
+(search-for-primes 10001 10101)
+; old elapsed runtime was 0.
+; new elapsed runtime is 9.99...e-3
+
+(search-for-primes 100001 100101)
+; old elapsed runtime was 1e-2
+; new elapsed runtime is 0.
+
+(search-for-primes 100000001 100000101)
+; old elapsed runtime was 0.04999...
+; new elapsed runtime is 0.0299...
+
+(search-for-primes 10000000001 10000000101)
+; old elapsed runtime was 0.42
+; new elapse runtime is 0.27
+
+(search-for-primes 1000000000001 1000000000101)
+; old elapsed runtime was 2.89
+; new elapsed runtime is 2.
+
+(search-for-primes 100000000000001 100000000000101)
+; old elapsed runtime was 36.27
+;new elapsed runtime is 23
+
+; searching for primes in the range [n, m] calls timed-prime-test for each odd in that range
+; timed-prime-test is just a wrapper for prime?
+; prime? calls smallest-divisor sqrt(n) many times at worst
+; thus, the new search-for-primes calls prime? the exact same number of times and in the same way
+; and smallest-divisor should be roughly twice as fast with this modification, so we do expect a doubling in speed
+; ignoring the early ones where everything was basically 0, the ratios of old/new were as follows:
+; 100000001: 1.6669
+; 10000000001: 1.445
+; 1000000000001; 1.577
+
+; this is not the double speed we anticipated. some problems could be from:
+; 1. the very small sample size and poor control (just running on my computer with a million other processes)
+; 2. overhead with next? it adds a constant time slowdown per step of smallest-divisor as we have to keep checking if it equals 2.
+; 3. checking divisibility of even numbers might be easier than for odd numbers, as the interpreter could do base 2 shenanigans from the getgo
+; indeed, if we wanna check if k | n the computer can first compare the 2^0 term of their respective binary expansions, which is presumably how it stores the number
+; if k's final bit is 0, i.e. if k is even, then the computer can instantly decide to return false for k | n if n's last bit is one. otherwise, it can truncate the last bit and check for (k/2) | (n/2). this could make the even half of the divisibility-check-space faster than the odd half, hence why removing the even half didnt cut the time in two

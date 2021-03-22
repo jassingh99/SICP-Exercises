@@ -22,14 +22,14 @@
 		(mult-iter a b 0)
 )
 
-the quantity ab + c is invariant in the above
-
-e.g.
-
-(mult-iter 4 3 0)
-(mult-iter 4 2 4)
-(mult-iter 8 1 4)
-(mult-iter 8 0 12)
-12
-
-\theta(log b) time, \theta(1) memory
+; the quantity ab + c is invariant in the above
+; 
+; e.g.
+; 
+; (mult-iter 4 3 0)
+; (mult-iter 4 2 4)
+; (mult-iter 8 1 4)
+; (mult-iter 8 0 12)
+; 12
+; 
+; \theta(log b) time, \theta(1) memory

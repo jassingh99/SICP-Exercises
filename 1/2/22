@@ -22,32 +22,77 @@
 )
 
 (define (prime? n)
-        (= (smallest-divisor n) n)
+        (and (= (smallest-divisor n) n) (> n 1))
 )
 
 (define (timed-prime-test n)
+        (define (report-prime elapsed-time)
+           	(display " **PRIME** ")
+           	(display elapsed-time)
+        )  
+        (define (report-composite elapsed-time)
+           	(display " **COMPOSITE** ")
+           	(display elapsed-time)
+        )
         (newline)
         (display n)
         (define (start-timed-prime-test n start-time)
                 (if (prime? n)
                     (report-prime (- (runtime) start-time))
-		    (report-composite (- (runtime) start-time))
+		            (report-composite (- (runtime) start-time))
                 )
         )
 	(start-timed-prime-test n (runtime))
 )
 
-(define (report-prime elapsed-time)
-	(display " **PRIME** ")
-	(display elapsed-time)
-)  
 
-(define (report-composite elapsed-time)
-	(display " **COMPOSITE** ")
-	(display elapsed-time)
+;(timed-prime-test 1000000016531)
+
+;(timed-prime-test (* 141650939 314606869))
+
+(define (search-for-primes lower upper)
+        (define (search-iter i)
+                (timed-prime-test i)
+                (if (= i upper)
+                    (newline)
+                    (search-iter (+ i 2))
+                )
+
+        )
+	(define prev (runtime))
+	(search-iter lower)
+	(newline)
+	(display "*** ELAPSED RUNTIME ***")
+	(newline)
+	(display (- (runtime) prev))
 )
 
-(timed-prime-test (* 1000000016531 1000000016531))
+(search-for-primes 1001 1101)
+; the following 3 primes are 1009, 1013, 1021. the elapsed runtime was 0.
 
+(search-for-primes 10001 10101)
+; next three are 10007, 10009, 100037. elapsed runtime was 0.
 
+(search-for-primes 100001 100101)
+;next three are 100003, 100019, 100043. elapsed runtime was 1e-2
 
+(search-for-primes 100000001 100000101)
+; elapsed runtime is 0.04999...
+
+(search-for-primes 10000000001 10000000101)
+; elapsed runtime is 0.42
+
+; the smaller values are too small to get any real data
+; going from 100000001 to 10000000001, a 2 order of magnitude increase, increased the runtime by one order of magnitude.
+
+(search-for-primes 1000000000001 1000000000101)
+; elapsed time 2.89
+; 2 more orders of magnitude, roughly one more order of magnitude in runtime
+
+(search-for-primes 100000000000001 100000000000101)
+; elapsed time 36.27
+; 2 more orders of magnitue, roughly one more in runtime
+
+; the data for the larger values does seem to suggest that the runtime is proportional to the number of steps
+; if T(n) is the runtime for [n, n+100] we have roughly seen that T(100n) = 10T(n)
+; as the order of growth was computed to be \theta(\sqrt{n}), this is to be expected
