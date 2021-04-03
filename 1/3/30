@@ -1,0 +1,42 @@
+; I'll do the sum I had in 29 as opposed to their sum
+; I explained the difference in the comments on 29
+
+(define (sum term a b next) 
+        ; in this iterative process, the value (sum term i b next) + (result) is invariant
+        ; we begin at (sum term a b next) + 0
+        ; at the end, this becomes (sum term (next b) b next) + result
+        ; and the former summand is 0 by convention.
+        (define (iter i result)
+                (if (> i b)
+                    result
+                    (iter (next i)
+                          (+ (term i)
+                             result
+                          )
+                    )
+                )
+        )
+
+        (iter a 0)
+)
+
+; below are some basic definitions and tests
+
+(define (inc n)
+        (+ n 1)
+)
+
+(define (id a)
+        a
+)
+
+(sum id 1 5 inc)
+(sum id -1 5 inc)
+(sum id 5 5 inc)
+(sum id 5 0 inc)
+
+(define (cube x)
+        (* x x x)
+)
+
+(sum cube 1 10 inc)

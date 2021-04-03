@@ -1,0 +1,48 @@
+; (a)
+
+(define (accumulator combiner null-value term a b next) 
+        (define (iter i result)
+                (if (> i b)
+                    result
+                    (iter (next i)
+                          (combiner (term i)
+                                    result
+                          )
+                    )
+                )
+        )
+
+        (iter a null-value)
+)
+
+; (b)
+
+; this process is recursive instead
+(define (r-accumulator combiner null-value term a b next)
+        (define (accumulator-iter i)
+                (if (> i b)
+                    null-value
+                    (combiner (term i)
+                              (accumulator-iter (next i))
+                    )
+                )
+        )
+	
+	(accumulator-iter a)
+)
+
+(define (id a)
+        a
+)
+
+(define (inc n)
+        (+ n 1)
+)
+
+(define (sum term a b next)
+        (accumulator + 0 term a b next)
+)
+
+(define (product term a b next)
+        (accumulator * 1 term a b next)
+)

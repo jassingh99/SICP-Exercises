@@ -1,0 +1,75 @@
+; (a)
+
+(define (product term a b next) 
+        ; in this iterative process, the value (product term i b next) * (result) is invariant
+        ; we begin at (product term a b next) * 1
+        ; at the end, this becomes (product term (next(b)) b next) * result
+        ; and the former thing is 1 by convention.
+        (define (iter i result)
+                (if (> i b)
+                    result
+                    (iter (next i)
+                          (* (term i)
+                             result
+                          )
+                    )
+                )
+        )
+
+        (iter a 1)
+)
+
+(define (inc n)
+        (+ n 1)
+)
+
+(define (id a)
+        a
+)
+
+(define (factorial n)
+        (product id 1 n inc)
+)
+
+(factorial 0)
+(factorial 5)
+(factorial -1)
+
+(define (pi-approx n)
+        (define (pi-term i)
+                (cond ( (= (remainder i 2) 0)
+                        (/ (+ i 2)
+                           (+ i 3)
+                        )
+                      )
+                      ( (= (remainder i 2) 1)
+                        (/ (+ i 3)
+                           (+ i 2)
+                        )
+                      )
+                )
+        )
+        
+        (* 4.0
+           (product pi-term 0 n inc)
+        )
+)
+
+(pi-approx 1000)
+
+; (b)
+
+; this process is recursive instead
+(define (prod term a b next)
+        (define (prod-iter i)
+                (if (> i b)
+                    1
+                    (* (term i)
+                       (prod-iter (next i))
+                    )
+                )
+        )
+	
+	(prod-iter a)
+)
+

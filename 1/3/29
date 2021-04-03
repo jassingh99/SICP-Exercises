@@ -1,0 +1,73 @@
+; slightly different sum than in the book
+; in the book, they start at a and keep applying next until it's above b
+; in this, it starts at a and applies next (b - a) many times
+; I suppose theirs is more general, as to compute my sum on (term a b next), we can just use the book sum of (term \circ next, a, b, inc)
+; but I only realized that after and it's not a very consequential difference so whatever
+; I'll stick with the less general one :/
+
+(define (sum term a b next)
+        (define (sum-iter i)
+                (if (> i b)
+                    0
+                    (+ (term i)
+                       (sum-iter (next i))
+                    )
+                )
+        )
+	
+	(sum-iter a)
+)
+
+(define (simpson f a b n)
+        ; id rather have h be a local variable but idk how that works
+        ; so instead it's just kept as a parameter and computed once later
+        (define (simp f a b n h)
+                (define (simp-term i)
+                        (cond ( (= i 0)
+                                (f a)
+                              )
+                              ( (= i n)
+                                (f b)
+                              )
+                              ( (= (remainder i 2) 0)
+                                (* 2
+                                   (f (+ a
+                                         (* i h)
+                                      )
+                                   )
+                                )
+                              )
+                              ( (= (remainder i 2) 1)
+                                (* 4
+                                   (f (+ a
+                                         (* i h)
+                                      )
+                                   )
+                                )
+                              )
+                        )
+                )
+        
+                (define (inc n)
+                        (+ n 1)
+                )
+        
+                (* (/ h 3)
+                   (sum simp-term 0 n inc)
+                )
+        )
+        
+        (simp f a b n (/ (- b a)
+                         n
+                      )
+        )
+)
+
+(define (cube x)
+	(* x x x)
+)
+
+(simpson cube 0 1.0 100)
+(simpson cube 0 1.0 1000)
+(simpson cube 0 1 100)
+

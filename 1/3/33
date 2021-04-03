@@ -1,0 +1,100 @@
+(define (filtered-accumulator filter combiner null-value term a b next) 
+        (define (iter i result) (cond ( (> i b)
+                        result
+                      )
+                      ( (filter i)
+                        (iter (next i)
+                              (combiner (term i)
+                                        result
+                              )
+                        )
+                      )
+                      ( else
+                        (iter (next i)
+                              result
+                        )
+                      )
+                )
+        )
+
+        (iter a null-value)
+)
+
+; (a)
+
+(define (divides? a n)
+        ( = (remainder n a)
+            0
+        )
+)
+
+(define (smallest-divisor n)
+        (define (test i)
+                (cond ( (> (* i i) n)
+                        n
+                      )
+                      ( (divides? i n)
+                        i
+                      )
+                      ( else
+                        (test (+ i 1))
+                      )
+                )
+        )
+
+        (test 2)
+)
+
+(define (prime? n)
+        (and (= (smallest-divisor n) n) (> n 1))
+)
+
+(define (square x)
+        (* x x)
+)
+
+(define (inc n)
+        (+ n 1)
+)
+
+(define (prime-square-sum a b)
+        (filtered-accumulator prime? + 0 square a b inc)
+)
+
+; 2^2 + 3^2 + 5^2 + 7^2 = 87
+(prime-square-sum 0 10)
+; 11^2 + 13^2 + 17^2 + 19^2 + 23^2 + 29^2 + 31^2 + 37^2 + 41^2 + 43^2 + 47^2 = 10379
+(prime-square-sum 10 50)
+
+; (b)
+
+(define (gcd a b)
+        (if (= b 0)
+            a
+            (gcd b (remainder a b))
+        )
+)
+
+(define (coprime? a b)
+        (= (gcd a b) 1)
+)
+
+(define (coprime-procedure n)
+        (lambda (a)
+                (coprime? a n)
+        )
+)
+
+(define (one a)
+        1
+)
+
+((coprime-procedure 10) 5)
+
+(define (totient n)
+        (filtered-accumulator (coprime-procedure n) + 0 one 1 n inc)
+)
+
+(totient 4)
+(totient 7)
+(totient 121)
