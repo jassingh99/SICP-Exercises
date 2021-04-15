@@ -1,0 +1,11 @@
+(define (compose f g)
+        (lambda (x)
+                (f (g x))
+        )
+)
+
+(define (square x) (* x x))
+(define (inc x) (+ x 1))
+
+; this is square(inc(6)) = square(7) = 49
+((compose square inc) 6)

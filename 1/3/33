@@ -91,6 +91,8 @@
 
 ((coprime-procedure 10) 5)
 
+; I misread what this part was asking so this should really be a product not a sum
+; but this is an easy fix and the totient is cooler anyways
 (define (totient n)
         (filtered-accumulator (coprime-procedure n) + 0 one 1 n inc)
 )

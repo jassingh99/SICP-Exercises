@@ -1,0 +1,45 @@
+(define (double f)
+        (lambda (x)
+                (f (f x))
+        )
+)
+
+(define (inc x)
+        (+ x 1)
+)
+
+; the procedure (double double) takes f and returns f^4 (multiplication is composition)
+; so double (double double) takes f and returns f^8
+; so ((double (double double)) inc) is inc^8: x \mapsto x + 8
+; so we expect this to be 13
+
+; I got my parentheses wrong above^^^
+; I computed (double ((double double) inc)), which does send x \mapsto x + 8
+             ((double ((double double) inc)) 5)
+; here's the correct computation for what is asked:
+; (double (double double)) takes f \mapsto (
+;                                              (double double) (
+;                                                                  (double double)
+;                                                                  f
+;                                                              )
+;                                          )
+; which is (                                       
+;              (double double) (                  
+;                                  (double (double f))
+;                              )                  
+;          )                                      
+
+; and finally, (double (double (double (double f))))
+; which is f^16
+; and inc^16: x \mapsto 16, so we expect the result to be 21
+(
+    (
+        (
+            double (
+                       double double
+                   )
+        )
+        inc
+    )
+    5
+)

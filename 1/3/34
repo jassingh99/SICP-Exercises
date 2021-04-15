@@ -1,0 +1,23 @@
+(define (f g)
+        (g 2)
+)
+
+(f (lambda (x)
+           (* x x)
+   )
+)
+
+; what does (f f) do?
+; by virtue of applicative order evaluation, the operand f would be evaluted first as
+; (lambda (g) (g 2))
+; so the interpreter will then try to evaluate (f (lambda (g) (g 2)))
+; it then evaluates the operator f, which we will denote (lambda (h) (h 2))
+; so we are left with ((lambda (h) (h 2)) (lambda (g) (g 2)))
+; this reduces to ((lambda (g) (g 2)) 2)
+; which then reduces to (2 2)
+; which is, of course, nonsense as 2 is not a unary procedure so we cannot evaluate it at 2
+; the interpreter should spit out an error telling us essentially this
+
+(f f)
+
+; indeed, the interpreter says "The object 2 is not applicable."

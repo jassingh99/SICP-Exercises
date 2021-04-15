@@ -1,0 +1,39 @@
+(define (cont-frac n d k)
+        (define (iter i running-total)
+                (if (= i 0)
+                    running-total
+                    (iter (- i 1)
+                          (/ (n i) 
+                             (+ running-total (d i))
+                          )
+                    )
+                )
+        )
+        (iter k 0)
+)
+
+(define (tan-cf x k)
+        ; we precompute -x^2 as we'll need it for all the values of (n i) for i >= 2
+        ; so we do it once rather than once per iteration
+        ; we could replace (* x x) with a square function, but since x is passed from tan-cf, applicative order evaluation tells us that x will still only have to be evaluated once
+        ; as when (tan-cf x k) is evaluated, x is computed before being passed to whatever tan-cf evaluates to
+        ; so this idea of replacing (* x x) with (square x) doesn't save any computations, as it did in 1.26
+        (define minus-x-squared (* -1 x x))
+
+        (define (d i)
+                (- (* 2 i) 1)
+        )
+
+        (define (n i)
+                (if (= i 1)
+                    x
+                    minus-x-squared
+                )
+        )
+        (cont-frac n d k)
+)
+
+(* (tan-cf 1 100) 1.0)
+
+; the x input is roughly pi/2 so this should be really big
+(* (tan-cf 1.57079632679 100) 1.0)

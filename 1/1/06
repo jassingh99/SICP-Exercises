@@ -13,4 +13,6 @@
         )
 )
 
-when running this (after defining all the other shit), the interpreter yells at you for "maximum recursion depth exceeded." indeed, when the interpreter evaluates the newif procedure that sqrtiter calls, it evaluates the operator cond and its operands (predicate consequent) and (else alternative). but the alternative called is (sqrtiter (improve guess x) x), so it tries to evaluate sqrtiter again. thus, we get lost in recursion. this is because of the applicative order evaluation.
+; when running this (after defining all the other shit), the interpreter yells at you for "maximum recursion depth exceeded." indeed, when the interpreter evaluates the newif procedure that sqrtiter calls, it evaluates the operator cond and its operands (predicate consequent) and (else alternative). but the alternative called is (sqrtiter (improve guess x) x), so it tries to evaluate sqrtiter again. thus, we get lost in recursion. this is because of the applicative order evaluation.
+
+; with the usual if, the recursion stops because at some point the interpreter evaluates the predicate and then the consequent without touching the alternative at all!

@@ -1,0 +1,137 @@
+(define (compose f g)
+        (lambda (x)
+                (f (g x))
+        )
+)
+
+; from 1.32
+(define (accumulator combiner null-value term a b next) 
+        (define (iter i result)
+                (if (> i b)
+                    result
+                    (iter (next i)
+                          (combiner (term i)
+                                    result
+                          )
+                    )
+                )
+        )
+
+        (iter a null-value)
+)
+
+(define (repeated function times)
+        (accumulator compose
+                     (lambda (x) x)
+                     (lambda (i) function)
+                     1
+                     times
+                     (lambda (n) (+ n 1))
+        )
+)
+
+(define (square x) (* x x))
+((repeated square 2) 5)
+
+; this brought up an interesting thought from me - why not do a repetition by squaring?
+; we already know of summing by doubling and exponentiation by squaring, so why not abstract this to any monoid?
+; I'm not sure how much faster this will be for composition though. In any case, it's worth a shot
+
+; this will compute value^times of the operation by squaring
+(define (repetition-by-squaring operation identity value times)
+        (define (operation-square x)
+                (operation x x)
+        )
+        (define (iter i base running-total)
+                (cond ( (= i 0)
+                        running-total
+                      )
+                      ( (even? i)
+                        (iter (/ i 2)
+                              (operation-square base)
+                              running-total
+                        )
+                      )
+                      ( else
+                        (iter (- i 1)
+                              base
+                              (operation base running-total)
+                        )
+                      )
+                )
+        )
+
+        (iter times value identity)
+)
+
+; for comparison, repetition without squaring can be taken via accumulator
+(define (repetition-without-squaring operation identity value times)
+        (accumulator operation
+                     identity
+                     (lambda (i) value)
+                     1
+                     times
+                     (lambda (n) (+ n 1))
+        )
+)
+
+; let's make sure these actually even worked
+(define (exp-by-squaring base times)
+        (repetition-by-squaring *
+                                1
+                                base
+                                times
+        
+        )
+)
+(define (exp-without-squaring base times)
+        (repetition-without-squaring *
+                                     1
+                                     base
+                                     times
+        
+        )
+)
+
+(exp-by-squaring 2 10)
+(exp-without-squaring 2 10)
+
+; ok they work, now let's time them
+
+(define time (runtime))
+(define a (exp-by-squaring 6 100000))
+(display (- (runtime) time))
+
+(define time (runtime))
+(define b (exp-without-squaring 6 100000))
+(display (- (runtime) time))
+
+; yup, squaring is faster. how about composing? let's iterate the tan function
+
+; for 40000 squaring is about 3 times faster
+; for 50000 without-squaring leads to a "maximum recursion depth exceeded" error
+; by-squaring can keep chugging for a looong time after that
+(define num 40000)
+
+(define time (runtime))
+(
+    (repetition-by-squaring compose
+                            (lambda (x) x)
+                            tan
+                            num
+    )
+    1.0
+)
+(display (- (runtime) time))
+
+
+(define time (runtime))
+(
+    (repetition-without-squaring compose
+                                 (lambda (x) x)
+                                 tan
+                                 num
+    )
+    1.0
+)
+(display (- (runtime) time))

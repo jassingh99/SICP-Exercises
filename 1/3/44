@@ -1,0 +1,50 @@
+; I'll use the simpler repeated I had here, the one without squaring, because it's a bit simpler than the squaring one and the efficiency gains shouldn't matter here
+
+(define (compose f g)
+        (lambda (x)
+                (f (g x))
+        )
+)
+
+; from 1.32
+(define (accumulator combiner null-value term a b next) 
+        (define (iter i result)
+                (if (> i b)
+                    result
+                    (iter (next i)
+                          (combiner (term i)
+                                    result
+                          )
+                    )
+                )
+        )
+
+        (iter a null-value)
+)
+
+(define (repeated function times)
+        (accumulator compose
+                     (lambda (x) x)
+                     (lambda (i) function)
+                     1
+                     times
+                     (lambda (n) (+ n 1))
+        )
+)
+
+(define dx 0.0000001)
+
+(define (smooth f)
+        (lambda (x)
+                (/ (+ (f (- x dx))
+                      (f x)
+                      (f (+ x dx))
+                   )
+                   3.0
+                )
+        )
+)
+
+(define (repeated-smooth f n)
+        ((repeated smooth n) f)
+)

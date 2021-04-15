@@ -1,0 +1,55 @@
+(define (cont-frac n d k)
+        (define (iter i running-total)
+                (if (= i 0)
+                    running-total
+                    (iter (- i 1)
+                          (/ (n i) 
+                             (+ running-total (d i))
+                          )
+                    )
+                )
+        )
+        (iter k 0)
+)
+
+(define (n k)
+        1
+)
+
+(define (d k)
+        (let ( (rem (remainder k 3)) )
+             (cond ( (= rem 0)
+                     1
+                   )
+                   ( (= rem 1)
+                     1
+                   )
+                   ( (= rem 2)
+                     ; d(k) = (2/3)(k - 2) + 2 for k = 2 mod 3
+                     ; e.g d(2) = 2, d(5) = 4, d(8) = 6
+                     (+ (* (/ 2 3)
+                           (- k 2)
+                        )
+                        2
+                     )
+                   )
+             )
+        )
+)
+
+(define (loop start end f)
+        (newline)
+        (if (> start end)
+            (display "DONE")
+            (begin (display (f start))
+                   (loop (+ start 1) end f)
+            )
+        )
+)
+
+; testing the definition of d
+; it's correct
+(loop 1 50 d)
+
+; e ≈ 0.7182818284590452353602874713526624977572470936999595749669676277...
+(* (cont-frac n d 1000) 1.0)
