@@ -1,0 +1,97 @@
+the idea of this section was that abstract computational ideas can be represented in scheme as "higher order procedures," i.e. by considering procedures themselves as the arguments or outputs of other procedures
+this allows generalizing and abstracting common patterns
+    for instance, we often have methods like sum_{i = 1}^n f(i), so we can write a general sum procedure
+        in fact, we also see prod f(i) as well, so we can write an even more general product procedure in a monoid (or semigroup if we dont want to consider the empty product)
+            the book refers to this as an "accumulator"
+            similarly, in my solution to 1.38 I implemented a generalized exponentiation via squaring method in a monoid
+
+we also introduced the lambda construct, which has the form
+    (lambda (parameters) body)
+this is a procedure which takes in arguments to plug into the parameters, which (likely) appear int he body
+    e.g ((lambda (x y) (+ x y)) 1 2) returns 3
+we can use define the same way as before to name a procedure given by a lambda
+    (define plus
+            (lambda (x y)
+                    (+ x y)
+            )
+    )
+
+lambda also gave us the ability to create local variables using the special form let
+    (let (
+            (var_1 exp_1)
+            ...
+            (var_n exp_n)
+         )
+         body
+    )
+this is syntax for the lambda
+    (
+        (lambda (var_1 ... var_n)
+                body
+        )
+        exp_1
+        ...
+        exp_n
+    )
+for instance, we can have
+    (let (
+            (x (* a b))
+            (y (+ a b))
+         )
+         (* (+ x y) x)
+    )
+
+    (
+        (lambda (x y)
+                (* (+ x y) x)
+        )
+        (* a b)
+        (+ a b)
+    )
+here, x, y were locally defined to have the values (* a b), (+ a b) within the let
+this, for instance, allows the value of x, y to be computed only once and then passed to the lambda
+
+let can also be used to locally bind variable names that are already defined
+    (define x 5)
+    (+ (let (
+                (x 3)
+            )
+            (+ x (* x 10))
+       )
+       x
+    )
+within the let, x is interpreted as 3, so it returns 33
+this value is then added to x, which is defined as 5 outside the let, so we get 38
+another example given is
+    (define x 2)
+    (let (
+            (x 3)
+            (y (+ x 2))
+         )
+         (* x y)
+    )
+which returns 12, as the value of y is computed as (+ x 2) outside of the let
+this, and other possible confusion about let, is more clear when rewritten in its lambda form
+    (define x 2)
+    (
+        (lambda (x y)
+                (* x y)
+        )
+        3
+        (+ x 2)
+    )
+when the interpreter reaches the (+ x 2) line, the only value of x it can know is 2
+if we just think lambdas as we do with formal lambda calculus this is clear enough
+
+we then introduced a few general computational methods, expressed as procedures in scheme, such as:
+    solving equations by cutting the interval of definition in half
+        find the lion by cutting the desert in half
+    fixed point iteration ala the banach fixed point theorem
+and various modifications and applications of these, like newton's method or nth root calculations
+
+ultimately, the philosophical lesson is that general computational methods can be expressed asscheme procedures
+and the lesson about the language itself is that scheme treats procedures as "first class"
+    They may be named by variables.
+    They may be passed as arguments to procedures.
+    They may be returned as the results of procedures.
+    They may be included in data structures
