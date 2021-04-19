@@ -1,4 +1,4 @@
-; I'll use the simpler repeated I had here, the one without squaring, because it's a bit simpler than the squaring one and the efficiency gains shouldn't matter here
+; I'll use the simpler repeated I had here, the one without squaring, because it's a bit easier to read than the squaring one and the efficiency gains shouldn't matter here
 
 (define (compose f g)
         (lambda (x)

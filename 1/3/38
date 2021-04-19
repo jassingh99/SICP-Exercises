@@ -41,7 +41,12 @@
         (newline)
         (if (> start end)
             (display "DONE")
-            (begin (display (f start))
+            ; i stole this begin syntax from stackoverflow
+            ; we could also use an empty lambda?
+            ; also I think cond allows multiple statements in the consequent of some clause
+            ; so that could also be better
+            ; see footnote 19 of section 1.2: file:///home/jas/Documents/Textbooks/Programming/Structure%20and%20Interpretation%20of%20Computer%20Programs/book-Z-H-10.html#footnote_Temp_26
+            (begin (display (f start)) 
                    (loop (+ start 1) end f)
             )
         )

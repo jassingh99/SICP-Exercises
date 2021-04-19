@@ -1,0 +1,66 @@
+(define (iterative-improvement good-enough? improve-guess)
+        (define (iterator guess)
+                (if (good-enough? guess)
+                    guess
+                    (iterator (improve-guess guess))
+                )
+        )
+        iterator
+)
+
+; below we reimplement the sqrt procedure
+
+(define (square x) (* x x))
+(define (average x y)
+        (/ (+ x y)
+           2
+        )
+)
+
+(define (sqrt x)
+        (define (good-enough? guess)
+                ( < (abs (- x
+                            (square guess)
+                         )
+                    )
+                    0.000001
+                )
+        )
+
+        (define (improve-guess guess)
+                (average guess (/ x guess))
+        )
+
+        ((iterative-improvement good-enough? improve-guess) 1.0)
+)
+
+(sqrt 2)
+(sqrt 50)
+
+; below we reimplement the fixed-point procedure
+
+; every call of iterative-improvement here will call f twice
+; once to check good-enough? and once to compute the next guess
+; it'd be nice to combine these into one call of f
+; we could do this by e.g. rewriting iterative improvement to take a good-enough? argument with two inputs
+(define (fixed-point f first-guess)
+        (define (good-enough? guess)
+                (< (square (- guess
+                              (f guess)
+                           )
+                   )
+                   0.000001
+                )
+        )
+
+        ((iterative-improvement good-enough? f) first-guess)
+)
+
+; below are the two tests given in 1.3.3
+(fixed-point cos 1.0)
+(fixed-point (lambda (y) (+ (sin y)
+                            (cos y)
+                         )
+             )
+             1.0
+)
