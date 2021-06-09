@@ -1,0 +1,78 @@
+(define zero
+        (lambda (f)
+                (lambda (x) x)
+        )
+)
+
+(define (add-1 n)
+        (lambda (f)
+                (lambda (x)
+                        (f ( (n f)
+                             x
+                           )
+                        )
+                )
+        )
+)
+
+; we compute this on 0
+; (add-1 zero)
+; (lambda (f)               
+;         (lambda (x)       
+;                 (f ( (zero f)
+;                      x    
+;                    )      
+;                 )         
+;         )                 
+; )                         
+; (lambda (f)               
+;         (lambda (x)       
+;                 (f x)         
+;         )                 
+; )                         
+; so one is succinctly defined as
+(define (one f) f)
+; if (n f) is f^n then ((add-1 n) f) is f \circ f^n = f^{n + 1}
+; so by induction, we have (n f) = f^n
+; for the sake of completeness, I'll value-trace (add-1 one) directly
+
+; (add-1 one)
+; (lambda (f)               
+;         (lambda (x)       
+;                 (f ( (one f)
+;                      x    
+;                    )      
+;                 )         
+;         )                 
+; )                         
+; (lambda (f)               
+;         (lambda (x)       
+;                 (f ( f
+;                      x      
+;                    )        
+;                 )           
+;         )                 
+; )
+
+; how then do we get (add n m)? well (n f) = f^n and (m f) = f^m
+; and we need ((add n m) f) = f^{n + m}
+; and, of course, f^n \circ f^m = f^{n + m}
+; so ((add n m) f) = (n f) \circ (m f)
+(define (compose f g)
+        (lambda (x)
+                (f (g x))
+        )
+)
+(define (add n m)
+        (lambda (f)
+                (compose (n f)
+                         (m f)
+                )
+        )
+)
+
+; we can also directly define multiplication
+; observe that (n (m f)) = (n f^m) = (f^m)^n = f^{mn}
+(define (mul n m)
+        (compose n m)
+)

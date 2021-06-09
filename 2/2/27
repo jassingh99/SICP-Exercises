@@ -1,0 +1,49 @@
+(define (deep-reverse list)
+        ; for a deep reverse, we still do the "global" iteration of input |-> cdr input and reverse |-> (cons (car input) reverse)
+        ; we must also reverse the (car input) that is popped off of input and placed on reverse
+        ; a leaf will reverse to itself, of course
+        (define (iter input reverse)
+                (cond ( (null? input)
+                        reverse 
+                      )
+                      ( (not (pair? input))
+                        input
+                      )
+                      ( else
+                        (iter (cdr input)
+                              (cons (deep-reverse (car input))
+                                    reverse
+                              )
+                        )
+                      )
+                )
+        )
+
+        (iter list ())
+)
+
+; I'd also like to think a bit about the complexity of the algorithm
+; say we represent our input list as a tree T with root r
+; let the branches connected to r be T_1, ..., T_n
+; then applying deep-reverse to T takes T_1, deep-reverses it, and places it at the front of the reverse list
+; and this process continues for T_2, ..., T_n
+; so the number of steps to reverse T should be the sum of the number of steps to reverse each T_i
+; and this continues recursively until we reach the leaves, which are a single step each
+; thus, it seems to me that this procedure will be \theta(N) where N is the number of leaves
+; there is also the memory question, as when computing deep-reverse(T), the interpreter must perform the subprocedure deep-reverse(T_1), which in turn has subprocedures
+; it seems to me that the memory will then be \theta(d) where d represents the depth of T
+
+; some tests
+(define x
+        (list (list 1 2)
+              (list 3 4)
+        )
+)
+x
+(deep-reverse x)
+
+(define x
+        (list 1 2 (list 3 4 (list 5 6)) 7 8)
+)
+x
+(deep-reverse x)

@@ -1,0 +1,51 @@
+(list 3 4) is (3 4), i.e. (cons 3 (cons 4 ()))
+(list (2 (list 3 4))) is (2 (3 4)) i.e. (cons 2 (cons (list 3 4) ()))
+which equals:
+(cons 2
+      (
+          cons (cons 3
+                     (cons 4
+                           ()
+                     )
+               )
+               ()
+      )
+)
+
+finally, (list 1 (list 2 (list 3 4))) = (1 (2 (3 4))) = (cons 1 (list 2 (list 3 4)))
+which equals:
+
+(cons 1
+      (cons (cons 2
+                  (
+                      cons (cons 3
+                                 (cons 4
+                                       ()
+                                 )
+                           )
+                           ()
+                  )
+            )
+            ()
+      )
+)
+
+as a tree, this is
+(1 (2 (3 4)))
+    1
+    (2 (3 4))
+        2
+        (3 4)
+            3
+            4
+
+box and pointer:
+                              (2 (3 4))    (3 4)        (4)
+                                 |           |           |
+                                 |           |           |
+                                 v           v           v
+(1 (2 (3 4))) ---> |o||o| ---> |o||o| ---> |o||o| ---> |o||o| ---> null
+                    |           |           |           |
+                    |           |           |           |
+                    v           v           v           v
+                    1           2           3           4

@@ -1,0 +1,35 @@
+we trace the value of (car (cons xy)) via substitution as follows:
+    (car (cons x y))
+    (car (lambda (m)
+                 (m x y)
+         )
+    )
+    (
+        (lambda (m)
+                (m x y)
+        )
+        (lambda (p q)
+                p
+        )
+    )
+this, in turn, is evaluated using the usual beta-reduction rule of lambda calculus
+that is, the (lambda (p q) q) block is substituted for m in the body of (lambda (m) (m x y))
+    (
+        (lambda (p q)
+                p
+        )
+        x
+        y
+    )
+again, applying the lambda calculus beta-reduction, we substitute (p:=x) and (q:= y) in the body
+so finally, the value is
+    x
+thus, we have shown (car (cons x y)) reducing to x
+this same line of reasoning shows that cdr can be defined as
+    (define (cdr z)
+            (z 
+                (lambda (p q)
+                        q
+                )
+            )
+    )

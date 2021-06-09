@@ -1,0 +1,55 @@
+; a list L can be decompose as (cons (car L) (cdr L))
+; we work recursively on these pieces, so that (fringe L) = (fringe (car L)) + (fringe (cdr L))
+
+; this is a more general append method which allows appending lists and elements
+; we do this by converting singletons a to (a)
+(define (general-append left right)
+        (cond ( (and (not (pair? left))
+                     (not (null? left))
+                )
+                (general-append (list left) right)
+              )
+              (  (and (not (pair? right))
+                      (not (null? right))
+                 )
+                 (general-append left (list right))
+              )
+              ( else
+                (append left right)
+              )
+        )
+)
+
+; tests for general-append
+(general-append 1 (list 2 3))
+(general-append (list 4 5) 6)
+(general-append (list 1 2) (list 3 4))
+
+(define (fringe L)
+        (if (not (pair? L))
+            L
+            (general-append (fringe (car L))
+                            (fringe (cdr L))
+            )
+        )
+)
+; if T(L) is the time complexity, then T(L) = T(car L) + T(cdr L)
+; and T(leaf) = 1
+; so T(L) = \theta(N) where N is the number of leaves of L
+; and the memory should just \theta(d) where d is the depth of L
+
+; fringe tests
+(define x
+        (list (list 1 2)
+              (list 3 4)
+        )
+)
+x
+(fringe x)
+
+(fringe ())
+
+(fringe (list 1 2 3 4))
+
+(list x x)
+(fringe (list x x))

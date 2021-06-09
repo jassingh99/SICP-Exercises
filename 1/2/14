@@ -147,7 +147,7 @@ PPPPPPPPPPP
 formally the process works like this
 fix some list l of n coins with varying values, e.g. 50,25,10,5,1
 (cc a n) satisfies the recurrence (cc a l) = (cc a l[1:]) + (cc (a - l[0]) l)
-here we are using the python list syntx l[1:] = [l[1], l[2], ..., l[n - 1]]
+here we are using the python list syntax l[1:] = [l[1], l[2], ..., l[n - 1]]
 the time complexity T and memory complexity M depend only on the size of l, so long as we treat basic arithmetic and shit as constant
 then T satisfies T(a, n) <= T(a, n - 1) + T(a - 1, n)
 here we use a - 1 for simplicity, as the slowest way for the a coordinate to decrease is to be one at a time. really, it goes like a, a - l[0], a - l[0] - l[1], etc

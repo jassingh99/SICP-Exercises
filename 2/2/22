@@ -1,0 +1,60 @@
+(define (square-list items)
+        (define (iter things answer)
+                (if (null? things)
+                    answer
+                    (iter (cdr things) 
+                          (cons (square (car things))
+                                answer
+                          )
+                    )
+                )
+        )
+
+        (iter items ())
+)
+
+(square-list (list 1 2 3))
+
+; it is indeed backwards
+; the iterations goes like this:
+; (things, answer) |-> (things[1:], things[0]^2 + answer)
+; so after two iterations we get (things[2:], things[1]^2 + things[0]^2)
+; here of course, + is concatenation
+; so yeah, it's backwards, as doing (cons element list) *prepends* element to list
+; so it loops through items and prepends the square of the first element to the beginning of answer
+; whereas it should loop through items and append that element to the end of answer
+
+(define (square-list items)
+        (define (iter things answer)
+                (if (null? things)
+                    answer
+                    (iter (cdr things)
+                          (cons answer
+                                (square (car things))
+                          )
+                    )
+                )
+        )
+
+        (iter items ())
+)
+
+(square-list (list 1 2 3))
+
+; we don't even get a valid list anymore
+; a list is something of the form:
+; (cons a 
+;       (cons b
+;             (cons c
+;                   (cons d
+;                         ()
+;                   )
+;             )
+;       )
+; )
+; which represents (a b c d)
+; i.e. () is a list and for any a and any list l, (cons a l) is the list formed by prepending a to l
+; this new square-list does the reverse by taking (cons list element)
+; this is a valid convention for lists that works by closure under appending rather than prepending
+; unfortunately for Louis, this convention is not one that scheme accepts
+; if we call this new append-convention a "Louis-list" then this new procedure correctly returns the Louis-list of squared items, although the input items is still a normal scheme list

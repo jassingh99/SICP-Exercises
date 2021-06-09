@@ -1,0 +1,146 @@
+(define make-interval cons)
+(define lower-bound car)
+(define upper-bound cdr)
+(define (add-interval x y)
+        (make-interval (+ (lower-bound x) (lower-bound y))
+                       (+ (upper-bound x) (upper-bound y))
+        )
+)
+(define (mul-interval x y)
+        (let (
+                (p1 (* (lower-bound x) (lower-bound y)))
+                (p2 (* (lower-bound x) (upper-bound y)))
+                (p3 (* (upper-bound x) (lower-bound y)))
+                (p4 (* (upper-bound x) (upper-bound y)))
+             )
+             (make-interval (min p1 p2 p3 p4)
+                            (max p1 p2 p3 p4)
+             )
+        )
+)
+(define (minus-interval interval)
+        (make-interval (* -1 (upper-bound interval))
+                       (* -1 (lower-bound interval))
+        )
+)
+(define (sub-interval a b)
+        (add-interval a
+                      (minus-interval b)
+        )
+)
+(define (sgn x)
+        (cond ( (= x 0)
+                0      
+              )        
+              ( (> x 0)
+                1      
+              )        
+              ( (< x 0)
+                -1     
+              )        
+        )              
+)                      
+(define (reciprocal-interval interval)
+        (cond ( (< (sgn (lower-bound interval))
+                   (sgn (upper-bound interval))
+                )
+                (newline)
+                (display "We cannot take the reciprocal of an interval containing 0.")
+              )
+              ( else
+                (make-interval (/ 1 (upper-bound interval))
+                               (/ 1 (lower-bound interval))
+                )
+              )
+        )
+)
+(define (div-interval I J)
+        (mul-interval I
+                      (reciprocal-interval J)
+        )
+)
+(define (print-interval I)
+        (newline)
+        (display "(")
+        (display (lower-bound I))
+        (display ", ")
+        (display (upper-bound I))
+        (display ")")
+)
+(define (make-center-width c w)
+        (make-interval (- c w)
+                       (+ c w)
+        )
+)
+(define (center i)
+        (/ (+ (lower-bound i)
+              (upper-bound i)
+           )
+           2
+        )
+)
+(define (width i)
+        (/ (- (upper-bound i)
+              (lower-bound i)
+           )
+           2
+        )
+)
+(define (make-center-percent center percent)
+        (let ( (width (* center percent)) )
+             (make-center-width center width)
+        )
+)
+(define (percent I)
+        (/ (width I)
+           (center I)
+        )
+)
+
+; now we start the problem
+
+(define (par1 r1 r2)
+        (div-interval (mul-interval r1 r2)
+                      (add-interval r1 r2)
+        )
+)
+(define (par2 r1 r2)
+    (let (
+            (one (make-interval 1 1))
+         )
+         (div-interval one
+                       (add-interval (div-interval one r1)
+                                     (div-interval one r2)
+                       )
+         )
+    )
+)
+
+(define I (make-center-percent 109433.33 0.0000000001))
+(define J (make-center-percent 1.2323423 0.000000000001))
+
+(define p1 (par1 I J))
+(define p2 (par2 I J))
+
+; algebraically identical operations yield different intervals
+(print-interval p1)
+(print-interval p2)
+
+; now let's compare their centers
+(center p1)
+(center p2)
+; pretty close
+
+; now let's compare the percent tolerance
+(percent p1)
+(percent p2)
+; the second method tends to be a smaller tolerance
+
+; division tends to add error, consider I/J
+(percent I)
+(percent J)
+(percent (div-interval I J))
+
+; consider also I / I
+(percent I)
+(percent (div-interval I I))

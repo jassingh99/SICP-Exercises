@@ -1,0 +1,12 @@
+this seems like a decent heuristic but it is certainly not a general fact
+imagine we had some function f which is algebraically just the identity, but in practical computation is wildly inefficient and introduces a lot of approximation errors
+for instance, f could be the composition of a (poor) square root and square procedure
+consider then the calculation x |-> x + x
+on intervals, this could be computed as I + I or as 2 * f(I)
+I is repeated in the former but not the latter
+however, we expect the latter to have a much worse tolerance
+of course, eva could argue that the f procedure would use I multiple times internally, but I think this reflects the fact that this heuristic is not a general fact
+it relies on the form the procedure is presented in, and this need not be sensible
+but again, this example is contrived and the heuristic seems ok
+
+in the case of par1 and par2, the testing in 2.14 suggests that par1 and par2 compute the same center (up to a small degree of error) and that par2 has a lower tolerance than par1

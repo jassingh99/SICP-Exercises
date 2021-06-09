@@ -1,0 +1,140 @@
+(define make-point cons)
+(define x-coord car)
+(define y-coord cdr)
+(define (equal-point? p q)
+        (and (= (x-coord p) (x-coord q))
+             (= (y-coord p) (y-coord q))
+        )
+)
+(define (sum-point p q)
+        (make-point (+ (x-coord p) (x-coord q))
+                    (+ (y-coord p) (y-coord q))
+        )
+)
+(define (left-scale-point scaler point)
+        (make-point (* scaler (x-coord point))
+                    (* scaler (y-coord point))
+        
+        )
+)
+(define (print-point point)
+        (newline)
+        (display "(")
+        (display (x-coord point))
+        (display ", ")
+        (display (y-coord point))
+        (display ")")
+)
+
+; these are stored as oriented segments from start ---> end
+(define make-segment cons)
+(define start-segment car)
+(define end-segment cdr)
+
+(define (midpoint-segment line)
+        (left-scale-point 1/2
+                          (sum-point (start-segment line)
+                                     (end-segment line)
+                          )
+        )
+)
+
+; here's a test, it should return (1/2, 1/2)
+(print-point (midpoint-segment (make-segment (make-point 0 0)
+                                             (make-point 1 1)
+                               )
+             )
+)
+
+; here are some additional procedures that will be of use in the next exercise
+
+; translate the segment by the point, interpreted as a vector
+(define (translate point segment)
+        (make-segment (sum-point point (start-segment segment))
+                      (sum-point point (end-segment segment)) 
+        )
+)
+
+(define (inner-product-point p q)
+        (+ (* (x-coord p) (x-coord q))
+           (* (y-coord p) (y-coord q)) 
+        )
+)
+
+(define (norm p)
+        (sqrt (inner-product-point p p))
+)
+
+(define (sub-point p q)
+         (sum-point (left-scale-point -1 p)
+                    q                      
+         )                                 
+)
+
+(define (distance p q)
+        (norm (sub-point p q))
+)
+
+(define (length segment)
+        (distance (start-segment segment) (end-segment segment))
+)
+
+; move segment1 and segment2 to the origin and compute their dot product
+(define (orthogonal? segment1 segment2)
+        (let (
+                 (origin (make-point 0 0))
+                 (start1 (start-segment segment1))
+                 (start2 (start-segment segment2))
+             )
+             (cond ( (not (equal-point? start1
+                                        origin
+                          )
+                     )
+                     (orthogonal? (translate (left-scale-point -1 start1)
+                                             segment1
+                                  )
+                                  segment2
+                     )
+                   )
+                   ( (not (equal-point? start2                                       
+                                        origin                                       
+                          )                                               
+                     )                                                    
+                     (orthogonal? segment1
+                                  (translate (left-scale-point -1 start2)
+                                             segment2                     
+                                  )                                       
+                     )                                                    
+                   )                                                      
+                   ( else
+                     (= (inner-product-point (end-segment segment1)
+                                       (end-segment segment2)
+                        )
+                        0
+                     )
+                   )
+             )
+        )
+)           
+
+(define p1 (make-point 0 1))
+(define p2 (make-point 1 1))
+(define q1 (make-point 3 2))
+(define q2 (make-point 3 3))
+
+(define segment1 (make-segment p1 p2))
+(define segment2 (make-segment q1 q2))
+
+; should be true
+(orthogonal? segment1 segment2)
+
+(define p1 (make-point 0 1))
+(define p2 (make-point 1 2))
+(define q1 (make-point 3 2))
+(define q2 (make-point 3 3))
+
+(define segment1 (make-segment p1 p2))
+(define segment2 (make-segment q1 q2))
+
+; should be false
+(orthogonal? segment1 segment2)

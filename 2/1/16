@@ -1,0 +1,13 @@
+consider (sqrt (square I)) for some interval I
+this should, of course, just be I (assuming that I > 0)
+but if we were to actually do this, we'd introduce errors, because the procedure to compute square and sqrt is fundamentally imprecise
+equivalence of real numbers requires an infinite amount of data and our computers can only work with a finite amount, e.g. a finite truncation of the digits
+sqrt and square are not the abstract mathematical functions, but practical computational procedures
+as such, they must necessarily introduce error, and this error can compound wildly the more complicated the proceure gets
+hence, we should not at all expect algebraically identical procedures to create computationally identical procedures, as these procedures are not doing pure algebra
+
+is it possible to create a package to fix this? I don't have a formal proof but I seriously doubt it, because real number equivalence requires infinite data
+here's a rough argument: let G be the group of diffeomorphisms of (0, infinity), or even just the "computable diffeomorphisms" like sqrt, square, etc
+    i dont know if this "computable diffeomorphism" thing makes sense but whatever
+if we had a procedure that would perform identical computations on algebraically identical procedures like sqrt \circ square = id, then given g_1, ..., g_n in G we could use that procedure to determine precisely if g_1 * ... * g_n = id
+hence, such a procedure would solve the word problem for G, which is probably impossible

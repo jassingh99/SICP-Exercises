@@ -1,0 +1,33 @@
+(define (sgn x)
+        (cond ( (= x 0)
+                0      
+              )        
+              ( (> x 0)
+                1      
+              )        
+              ( (< x 0)
+                -1     
+              )        
+        )              
+)                      
+
+(define (reciprocal-interval interval)
+        (cond ( (< (sgn (lower-bound interval))
+                   (sgn (upper-bound interval))
+                )
+                (newline)
+                (display "We cannot take the reciprocal of an interval containing 0.")
+              )
+              ( else
+                (make-interval (/ 1 (upper-bound interval))
+                               (/ 1 (lower-bound interval))
+                )
+              )
+        )
+)
+
+(define (div-interval I J)
+        (mul-interval I
+                      (reciprocal-interval J)
+        )
+)

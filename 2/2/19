@@ -1,0 +1,67 @@
+; below, the procedures no-more?, first-denomination, and except-first-denomination need to be defined
+; no-more? is a predicate that tells us if the coin-list is empty
+(define no-more? null?)
+
+; first-denomination is the first thing in the coin list
+(define first-denomination car)
+
+; except-first-denomination is the list of coin values other than the first
+(define except-first-denomination cdr)
+
+; amount is the number of "cents" or whatever other currencies call it
+; coin-values is the list of cent-values of coins
+; e.g. for US coins we have (50 25 10 5 1)
+; this procedure will return the number of ways to create amount many cents from the list of coins
+(define (cc amount coin-values)
+    (cond 
+          ; only the empty collection has amount 0
+          ( (= amount 0)
+            1
+          )
+
+          ; negative amounts obviously fail
+          ; no-more? suggests that there are no coin-calues left to choose from, so fail
+          ( (or (< amount 0)
+                (no-more? coin-values)
+            )
+            0
+          )
+
+          ( else
+            ; the two summands represent collections exlcluding or including the first denomination
+            (+ (cc amount
+                   (except-first-denomination coin-values)
+               )
+               (cc (- amount
+                      (first-denomination coin-values)
+                   )
+                   coin-values
+               )
+            )
+        )
+    )
+)
+
+(define us-coins (list 50 25 10 5 1))
+
+; should be 292
+(cc 100 us-coins)
+
+; should be 4
+(cc 11 us-coins)
+
+; some edge case testing
+(cc 0 us-coins)
+(cc -5 us-coins)
+(cc 100 ())
+(cc 0 ())
+
+; the order of these lists will not affect the answer as the recursive nature is independent of the order
+; that is, every collection of coins either includes or excludes one fixed denomination
+; and by induction, we can solve the excluded case, as the lsit size decreases
+; and we can solve the included case, as the amount decreases by the denomination value
+; order is irrelevant here, and to witness this see below:
+
+(define different-order-us-coins (list 25 5 10 50 1))
+(cc 100 different-order-us-coins)
+(cc 11 different-order-us-coins)

@@ -1,0 +1,14 @@
+; (a, b) - (c, d) = (a, b) + (- (c, d)) so the only new thing to implement is the minus
+; - (a, b) = (-b, -a)
+
+(define (minus-interval interval)
+        (make-interval (* -1 (upper-bound interval))
+                       (* -1 (lower-bound interval))
+        )
+)
+
+(define (sub-interval a b)
+        (add-interval a
+                      (minus-interval b)
+        )
+)

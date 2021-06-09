@@ -1,0 +1,51 @@
+(define make-interval cons)
+(define lower-bound car)
+(define upper-bound cdr)
+
+(define (print-interval I)
+        (newline)
+        (display "(")
+        (display (lower-bound I))
+        (display ", ")
+        (display (upper-bound I))
+        (display ")")
+)
+
+(define (make-center-width c w)
+        (make-interval (- c w)
+                       (+ c w)
+        )
+)
+(define (center i)
+        (/ (+ (lower-bound i)
+              (upper-bound i)
+           )
+           2
+        )
+)
+(define (width i)
+        (/ (- (upper-bound i)
+              (lower-bound i)
+           )
+           2
+        )
+)
+
+; percent is the ratio of width/center
+(define (make-center-percent center percent)
+        (let ( (width (* center percent)) )
+             (make-center-width center width)
+        )
+)
+
+(define (percent I)
+        (/ (width I)
+           (center I)
+        )
+)
+
+; should be (6.12, 7.48)
+(print-interval (make-center-percent 6.8 0.1))
+
+; should be 0.1
+(percent (make-center-percent 6.8 0.1))

@@ -1,0 +1,26 @@
+(define (square x) (* x x))
+
+(define (square-list1 items)
+        (if (null? items)
+            ()
+            (cons (square (car items))
+                  (square-list1 (cdr items))
+            )
+        )
+)
+
+(define (square-list2 items)
+        (map square items)
+)
+
+; this should always be true
+(define (are-these-the-same? items)
+        (equal? (square-list1 items)
+                (square-list2 items)
+        )
+)
+
+(are-these-the-same? (list 1 2 4))
+(are-these-the-same? (list 1))
+(are-these-the-same? (list 1.0 -5.666 3.1423423))
+(are-these-the-same? ())

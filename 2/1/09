@@ -1,0 +1,9 @@
+we have (a, b) + (c, d) = (a + c, b + d)
+width(a + b, c + d) = (a + b + c + d)/2 = (a + b)/2 + (c + d)/2 = width(a, b) + width(c, d)
+similarly, width(a, b) = width(-b, -a) so width((a, b) - (c, d)) = width(a, b) + width(c, d)
+
+we have (0, 1) * (0, 1) = (0, 1). additionally, we have (-1/2, 1/2) * (-1/2, 1/2) = (-1/4, 1/4).
+in both cases, we took the product on width 1/2 intervals
+in the former, the product width was 1/2
+in the latter, the product width was 1/4
+so width(IJ) is not a function of width(I), width(J)

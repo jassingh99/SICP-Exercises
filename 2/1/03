@@ -1,0 +1,248 @@
+(define make-point cons)
+(define x-coord car)
+(define y-coord cdr)
+(define (equal-point? p q)
+        (and (= (x-coord p) (x-coord q))
+             (= (y-coord p) (y-coord q))
+        )
+)
+(define (sum-point p q)
+        (make-point (+ (x-coord p) (x-coord q))
+                    (+ (y-coord p) (y-coord q))
+        )
+)
+(define (left-scale-point scaler point)
+        (make-point (* scaler (x-coord point))
+                    (* scaler (y-coord point))
+        
+        )
+)
+(define (print-point point)
+        (newline)
+        (display "(")
+        (display (x-coord point))
+        (display ", ")
+        (display (y-coord point))
+        (display ")")
+)
+
+; these are stored as oriented segments from start ---> end
+(define make-segment cons)
+(define start-segment car)
+(define end-segment cdr)
+
+(define (midpoint-segment line) (left-scale-point 1/2
+                          (sum-point (start-segment line)
+                                     (end-segment line)
+                          )
+        )
+)
+
+; here's a test, it should return (1/2, 1/2)
+(print-point (midpoint-segment (make-segment (make-point 0 0)
+                                             (make-point 1 1)
+                               )
+             )
+)
+
+; here are some additional procedures that will be of use in the next exercise
+
+; translate the segment by the point, interpreted as a vector
+(define (translate point segment)
+        (make-segment (sum-point point (start-segment segment))
+                      (sum-point point (end-segment segment)) 
+        )
+)
+
+(define (inner-product-point p q)
+        (+ (* (x-coord p) (x-coord q))
+           (* (y-coord p) (y-coord q)) 
+        )
+)
+
+(define (norm p)
+        (sqrt (inner-product-point p p))
+)
+
+(define (sub-point p q)
+         (sum-point (left-scale-point -1 p)
+                    q                      
+         )                                 
+)
+
+(define (distance p q)
+        (norm (sub-point p q))
+)
+
+(define (length segment)
+        (distance (start-segment segment) (end-segment segment))
+)
+
+; move segment1 and segment2 to the origin and compute their dot product
+(define (orthogonal? segment1 segment2)
+        (let (
+                 (origin (make-point 0 0))
+                 (start1 (start-segment segment1))
+                 (start2 (start-segment segment2))
+             )
+             (cond ( (not (equal-point? start1
+                                        origin
+                          )
+                     )
+                     (orthogonal? (translate (left-scale-point -1 start1)
+                                             segment1
+                                  )
+                                  segment2
+                     )
+                   )
+                   ( (not (equal-point? start2                                       
+                                        origin                                       
+                          )                                               
+                     )                                                    
+                     (orthogonal? segment1
+                                  (translate (left-scale-point -1 start2)
+                                             segment2                     
+                                  )                                       
+                     )                                                    
+                   )                                                      
+                   ( else
+                     (= (inner-product-point (end-segment segment1)
+                                       (end-segment segment2)
+                        )
+                        0
+                     )
+                   )
+             )
+        )
+)           
+
+; ================================================
+; now we'll actually being working on exercise 2.3
+; ================================================
+
+; a rectangle will be a pair of orthogonal line segments with a common starting point
+; our constructor will yell at us if the line segments aren't orthogonal or if their starting points are different
+
+(define (make-rectangle line1 line2)
+        (cond ( (not (orthogonal? line1 line2))
+                (newline)
+                (display "Line segments aren't orthogonal!")
+              )
+              ( (not (equal-point? (start-segment line1)
+                                   (start-segment line2)
+                     )
+                )
+                     (newline)
+                     (display "Lines do not start at the same point! Try swapping the orientation?")
+              )
+              ( else
+                (cons line1 line2)
+              )
+        )
+)
+
+; below are tests of the logic checking of the make-rectangle
+; I have them commented out so as to not clutter the output too much
+; but I kept the last (valid) case to test area and perimeter
+;   (define p1 (make-point 0 1))
+;   (define p2 (make-point 1 1))
+;   (define q1 (make-point 3 2))
+;   (define q2 (make-point 3 3))
+;   
+;   (define segment1 (make-segment p1 p2))
+;   (define segment2 (make-segment q1 q2))
+;   
+;   ; orthogonal but different starting point
+;   (make-rectangle segment1 segment2)
+;   
+;   (define p1 (make-point 0 1))
+;   (define p2 (make-point 1 2))
+;   (define q1 (make-point 3 2))
+;   (define q2 (make-point 3 3))
+;   
+;   (define segment1 (make-segment p1 p2))
+;   (define segment2 (make-segment q1 q2))
+;   
+;   ; not orthogonal and different starting point
+;   (make-rectangle segment1 segment2)
+;   
+;   (define p1 (make-point 0 1))
+;   (define p2 (make-point 1 2))
+;   (define q1 (make-point 0 1))
+;   (define q2 (make-point 3 3))
+;   
+;   (define segment1 (make-segment p1 p2))
+;   (define segment2 (make-segment q1 q2))
+;   
+;   ; not orthogonal and same statrting point
+;   (make-rectangle segment1 segment2)
+;   
+    (define p1 (make-point 0 0))
+    (define p2 (make-point 1 1))
+    (define q1 (make-point 0 0))
+    (define q2 (make-point -1 1))
+    
+    (define segment1 (make-segment p1 p2))
+    (define segment2 (make-segment q1 q2))
+    
+    ; orthogonal and same statrting point
+    (define rectangle (make-rectangle segment1 segment2))
+
+(define leg1-rectangle car)
+(define leg2-rectangle cdr)
+
+(define (area rectangle)
+        (* (length (leg1-rectangle rectangle))
+           (length (leg2-rectangle rectangle)) 
+        )
+)
+
+(define (perimeter rectangle)
+        (+ (* 2
+              (length (leg1-rectangle rectangle))
+           )
+           (* 2                                   
+              (length (leg2-rectangle rectangle)) 
+           )                                      
+        )
+)
+
+; should be 2
+(area rectangle)
+
+; should be 4 sqrt(2) \approx 5.65685
+(perimeter rectangle)
+
+; now we implement a new make-rectangle procedure, again using two lines
+; but here, the two lines represent the two diagonals of the rectangle
+; for this to be valid, we need both lines to be the same length and to intersect at a common midpoint
+; we again implement error checking to make sure this works
+(define (make-rectangle diag1 diag2)
+        (cond ( (not (= (length diag1)
+                        (length diag2)
+                     )
+                 )
+                 (newline)
+                 (display "Diagonals are not the same length!")
+                )
+              ( (not (equal-point? (midpoint-segment diag1)                             
+                                   (midpoint-segment diag2)                             
+                     )                                             
+                )
+                (newline)                                     
+                (display "Diagonals do not intersect at the midpoint-segment!")
+              )                                                  
+              ( else
+                (cons diag1 diag2)
+              )
+        )
+)
+
+(define diag1-rectangle car)
+(define diag2-rectangle cdr)
+
+; now, I could define (leg1-rectangle) and (leg2-rectangle) procedures on this representation
+; this is doable, but it's an exercise in analytic geometry I don't care to bash out
+; but if I did this then the above area and perimeter procedures would still work in this representation with no modification
+; I could also define diagonal selectors for the first representation to keep everything symmetric
+; whether the rectangle is constructed with diagonals or legs is beyond the abstraction barrier of a programmer interfacing with these diagonal and leg selectors

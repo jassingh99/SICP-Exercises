@@ -1,0 +1,25 @@
+(define (reverse list)
+        ; we will define an iterative procedure that pops off the beginning of the list and builds the reversed list from the end first
+        ; so this should be \theta(n)
+        ; e.g start with (1 (2 (3 ()))) as the main list and () as the in-progress-reversed
+        ; next we have (2 (3 ())), (1 ()) via cdr and conscar
+        ; then (3 ()) and (2 (1 ()))
+        ; (), (3 (2 (1 ()))) and done
+        ; so at each stage we take input   |-> cdr input
+        ;                          reverse |-> (cons (car input) reverse)
+        (define (iter input reverse)
+                     (if (null? input)
+                         reverse
+                         (iter (cdr input)
+                               (cons (car input) reverse)
+                         )
+                     )
+        )
+
+        (iter list ())
+)
+
+(reverse (list 1 2 3))
+(reverse ())
+(reverse (list 1))
+(reverse (list 1 2 4 5 6 7 8 8 9))

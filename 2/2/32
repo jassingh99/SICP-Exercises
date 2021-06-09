@@ -1,0 +1,36 @@
+; returns the procedure which prepends by the element
+(define (prepender element)
+        (lambda (L)
+                (append (list element) L)
+        )
+)
+
+(define (powerset S)
+        (if (null? S)
+            (list ())
+            (let ( (rest (powerset (cdr S))) )
+                 (append rest
+                         (map (prepender (car S))
+                              rest
+                         )
+                 )
+            )
+        )
+)
+
+(powerset ())
+(powerset (list 1))
+(powerset (list 1 2 3))
+(powerset (list (list 1)))
+(powerset (list 1 (list 2 3)))
+
+; Let me first remark, as seen in last two examples, that this is not a "deep" power set
+; i.e. it treats all elements of the list as atomic, even if they themselves are lists
+; anyways, suppose our set S = (s_1 ... s_n)
+; then (cdr S) = (s_2 ... s_n) and (car S) = s_1
+; a subset of S does not contain s_1 or it does
+; the subset of P(S) which doesn't contain s_1 is P((s_2, ..., s_n)), which is called "rest" above
+; the subset of P(S) which does contain s_1 consists of sets of the form s_1 \cup A where A is a subset of (s_2 ... s_n)
+; this is the image of the (map (prepender (car S)) rest) procedure
+; so the append call in powerset covers both of these disjoint cases as described
+; and by induction, it eventually reaches the case of an empty list, which has power set (())

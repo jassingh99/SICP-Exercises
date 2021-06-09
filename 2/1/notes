@@ -1,0 +1,58 @@
+in the previous chapter we developed abstraction of procedures
+we learned how to build up complex procedures using black box abstractions
+    what is *? what is +? this is irrelevant from the point of view of their usage, as they can be regarded as "black boxes"
+        how these are ultimately implemented is irrelevant to interfacing with them
+this abstraction allowed us to develop general and complex procedures out of smaller ones, as we could think in higher order terms
+    we neednt worry about how multiplication works, so we can freely design procedures using *
+
+now, we will analogously abstract data, and similarly we can construct compound data from more basic ones without knowing the implementation details
+and as with abstract procedures, we shall design programs based on the idea that they should be agnostic of the underlying implementation of whatever data we use
+    there will be the underlying concrete representation, which our programs will be independent of
+        instead, they will interface with the data using procedures:
+            "selectors" will retrieve information from these concrete representations
+            "constructors" will create this concrete representations
+        this interface will allow us to write programs using abstract rather than concrete data
+            and as with procedures, this gives us flexibility and great expressive power
+
+for example, we consider the abstract data of a rational number
+    a rational number is *constructed* from a numerator and a denominator
+    and given a rational number, we can *select* its (or rather, some) numerator and denominator
+    
+    now, if we were solely given procedures (make-rat a b), (numer p), and (denom q) without knowledge of their implementation, we could define rational number arithmetic
+        e.g. (mul p q) would be (make-rat (* (numer p) (numer q)) (* (denom p) (denom q)))
+    and again, we have no idea how these procedures were defined
+    but if they work as we expect them to, then for all intents and purposes they are sufficient
+
+    now here's a concrete representation of rationals: pairs
+        we have the procedure cons, which compound two arguments into a pair
+        we also have car and cdr, which extract the first and second parts of a pair respectively
+            (car (cons a b)) = a
+            (cdr (cons a b)) = b
+        so we can (define make-rat cons), (define numer car), and (define denom cdr)
+        but when interfacing with the make-rat, numer, and denom procedures this detail is irrelevant
+            for instance, we could construct and select these differently
+            imagine instead that (make-rat a b) created the reduced form rational (a/g, b/g)
+            or alternatively, if make-rat was as above but numer and denom returned the reduced numerator and denominator
+            these changes do not affect the procedures defined using the *abstract* rationals
+                e.g. the (mul p q) procedure does not have to change at all
+
+ok but we've just pushed the problem back right? what is a pair? how does cons work?
+the programmer writing a rational number package interfaces with cons, car, and cdr the exact same way a programmer writing (mul p q) interfaces with make-rat, numer, and denom - their specific implementation is past the "abstraction barrier"
+    asking how the pairs are implemented is the same as asking how make-rat is implemented - it is irrelevant to the task at hand
+    the procedures cons and make-rat both create abstraction barriers, where a programmer can interface solely with the black boxes and ignore the implementation
+    this implementation-agnosticism gives us the flexibility to radically change the concrete without having to change the abstract, such as with the reduced rational stuff above
+        when working on a specific problem, we need only live in a specific layer of the abstraction hierarchy. everything below us is just a black box
+            for me interfacing with mit-scheme on my terminal, the procedures cons, car, +, *, etc are all behind an abstraction barrier and I can freely work with them as black boxes
+
+what is data?
+    a pair is an example of data implemented abstractly through its constructor cons and selectors car, cdr
+    and for our purposes, how cons, car, and cdr are related is irrelevant
+        but that's actually a lie - not just any 3 procedures can truly represent a pair
+        so what is a pair? mathematically, it's some symbol (a, b) and (a, b)=(c, d) iff a = c and b = d
+        the underlying set theoretic definition is irrelevant, *so long as this property holds*
+        so in the same way, the implementation of cons, car, and cdr is irrelevant, so long as some property between them holds
+            in this case, that property would be (car (cons a b)) = a, (cdr (cons a b)) =b
+            this means that in scheme, an abstract pair is just some thing that we can define with two other things that can be faithfully retrieved - just like in math
+    what are natural numbers?
+        something satisfying the peano axioms I suppose
+        e.g. church numerals and von neumann ordinals

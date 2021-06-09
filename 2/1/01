@@ -1,0 +1,88 @@
+(define (make-rat a b)
+        (define (sgn x)
+                (cond ( (= x 0)
+                        0
+                      )
+                      ( (> x 0)
+                        1
+                      )  
+                      ( (< x 0)
+                        -1
+                      )
+                )
+        )
+        (let (
+                (g (gcd a b))
+                (s (sgn (* a b)))
+             )
+             (if (< s 0)
+                 (cons (/ (* -1 (abs a))
+                          g
+                       )
+                       (/ (abs b)
+                          g
+                       )
+                 )
+                 (cons (/ (abs a) g)
+                       (/ (abs b) g)
+                 )
+             )
+        )
+)
+(define numer car)
+(define denom cdr)
+
+(define (rat-sum a b)
+        (make-rat (+ (* (numer a) (denom b))
+                     (* (numer b) (denom a))
+                  )
+                  (* (denom a) (denom b))
+        )
+)
+(define (rat-minus a)
+        (make-rat (* -1 (numer a))
+                  (denom a)
+        )
+)
+(define (rat-sub a b)
+        (rat-sum a
+                 (rat-minus b)
+        )
+)
+
+(define (rat-mul a b)
+        (make-rat (* (numer a) (numer b))
+                  (* (denom a) (denom b))
+        )
+)
+(define (rat-inv a)
+        (make-rat (denom a)
+                  (numer a)
+        )
+)
+(define (rat-div a b)
+        (rat-mul a
+                 (rat-inv b)
+        )
+)
+
+; this is redundant if we only interface with rationals through the above procedures
+; as each of them calls (make-rat), which only creates pairs of the form {(a, b) \in Z \times N : gcd(a, b) = 1}
+; these form a system of representatives of the rationals
+(define (rat-equal? a b)
+        (= (* (numer a) (denom b))
+           (* (numer b) (denom a))
+        )
+)
+
+(define (rat-print a)
+        (newline)
+        (display (numer a))
+        (display "/")
+        (display (denom a))
+)
+
+(rat-print (rat-sum (make-rat -1 3)
+                    (make-rat 1 3)
+           )
+)

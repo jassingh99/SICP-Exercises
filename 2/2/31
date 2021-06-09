@@ -1,0 +1,22 @@
+(define (tree-map function tree)
+        (cond ( (null? tree)
+                tree
+              )
+              ( (not (pair? tree))
+                (function tree)
+              )
+              ( else
+                (cons (tree-map function (car tree))
+                      (tree-map function (cdr tree))
+                )
+              )
+        )
+)
+
+(define (square x) (* x x))
+
+(define (square-tree tree) (tree-map square tree))
+
+(define L (list 1 (list 2 (list 3 4) 5) (list 6 7)))
+L
+(square-tree L)

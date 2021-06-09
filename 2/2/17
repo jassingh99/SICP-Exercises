@@ -1,0 +1,18 @@
+(define (last-pair list)
+        (if (null? list)
+            (display "Procedure is undefined on null inputs.")
+            (let (
+                     ; this is the tail end of the list after removing the first element
+                     (tail (cdr list))
+                 )
+                 ; the tail is empty iff we've reached the last element
+                 (if (null? tail)
+                     list
+                     (last-pair tail)
+                 )
+            )
+        )
+)
+
+(last-pair (list 1 2 4 5 6))
+(last-pair ())

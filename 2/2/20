@@ -1,0 +1,57 @@
+(define (reverse list)
+        (define (iter input reverse)
+                     (if (null? input)
+                         reverse
+                         (iter (cdr input)
+                               (cons (car input) reverse)
+                         )
+                     )
+        )
+
+        (iter list ())
+)
+
+(define (parity n)
+        (abs (remainder n 2))
+)
+
+; first is some integer
+; . rest means that all inputs after the first will be passed to the body as a list called rest
+; returns the list beginning with first and containing all the elements of rest with the same parity as first
+(define (same-parity first . rest)
+        ; appends the elements from "append-from" of parity "p" to the singleton "append-to"
+        ; appending requires more work than prepending, which can be one with a single cons
+        ; so we will actually prepend and reverse, which are both linear
+        ; the alternative would be appending to the end of append-to at every step
+        ; appending takes about (length append-to) steps every time
+        ; so this would take around sum_{i = 1}^n i steps where n is the number of elements of append-from of the appropriate parity
+        ; so this would be (n + 1)n/2 which is quadratic
+        ; as opposed to the reversing thing which is linear
+        (define (append-by-parity append-to append-from p)
+                (if (null? append-from)
+                    (reverse append-to)
+                    (if (= p
+                           (parity (car append-from))
+                        )
+                        (append-by-parity (cons (car append-from)
+                                                append-to
+                                          )
+                                          (cdr append-from)
+                                          p
+                        )
+                        (append-by-parity append-to
+                                          (cdr append-from)
+                                          p
+                        )
+                    )
+                )
+        )
+
+        (append-by-parity (list first) rest (parity first))
+)
+
+(same-parity 1 2 3 4 5 6)
+(same-parity 2 2 3 4 5 6)
+(same-parity 1)
+(same-parity 1 3 -5 2 4)
+(same-parity 1 -1)

@@ -1,0 +1,13 @@
+we want to consider the product (a - (e/2)a, a + (e/2)a)(b - (d/2)b, b + (d/2)b) for small e, d
+assume everything is positive
+we want to find the percentage tolerance (width/center) of the product in terms of e, d
+which are the tolerances for the two intervals
+
+since everything is positive, the new interval is
+    ((a - (e/2)a)(b - (d/2)b),(a + (e/2)a)(b + (d/2)b))
+    =(ab - ab(d/2) - ab(e/2) + ab(de/4), ab + ab(d/2) + ab(e/2) + ab(de/4))
+
+if d, e are very small then a first order approximation says that de is negligible
+hence,
+    ≈ (ab - ab(d/2 + e/2), ab + ab(d/2 + e/2))
+so the percentage tolerance of the product is roughly d + e, the sum of the tolerances of the two intervals

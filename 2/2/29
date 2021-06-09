@@ -1,0 +1,123 @@
+(define (make-mobile left right)
+        (list left right)
+)
+(define (make-branch length structure)
+        (list length structure)
+)
+
+;----(a)----
+; branch selectors
+(define (left-branch mobile)
+        (car mobile)
+)
+(define (right-branch mobile)
+        (car (cdr mobile))
+)
+
+; brach component selectors
+(define (branch-length branch)
+        (car branch)
+)
+(define (branch-structure branch)
+        (car (cdr branch))
+)
+
+;----(b)----
+; let me now also introduce a predicate to determine if a mobile or a weight is attached to a branch
+(define (has-mobile? branch)
+        (pair? (branch-structure branch))
+)
+; if this is false then (branch-structure branch) is the weight of the attached object
+
+(define (branch-weight branch)
+        (if (has-mobile? branch)
+            (total-weight (branch-structure branch))
+            (branch-structure branch)
+        )
+)
+
+(define (total-weight mobile)
+        (+ (branch-weight (left-branch mobile))
+           (branch-weight (right-branch mobile))
+        )
+)
+
+; let's test this
+(define left (make-branch 1 1))
+(define right (make-branch 1 2))
+(define mobile (make-mobile left right))
+mobile
+(total-weight mobile)
+
+(define left (make-branch 1 5))
+(define right (make-branch 1 mobile))
+(define new-mobile (make-mobile left right))
+new-mobile
+(total-weight new-mobile)
+
+;----(c)----
+; a branch with an isolated weight is said to be balanced
+(define (branch-balanced? branch)
+        (if (has-mobile? branch)
+            (balanced? (branch-structure branch))
+            true
+        )
+)
+(define (torque branch)
+        (* (branch-length branch) (branch-weight branch))
+)
+(define (balanced? mobile)
+        (let (
+                (left (left-branch mobile))
+                (right (right-branch mobile))
+             )
+             (cond ( (not (branch-balanced? left))
+                     false
+                   )
+                   ( (not (branch-balanced? right)) 
+                     false                                
+                   )
+                   ( (not (equal? (torque left)
+                                  (torque right)
+                          )
+                     )
+                     false
+                   )
+                   ( else
+                     true
+                   )
+             )
+        )
+)
+; this could be better optimized by somehow combining the torque and branch-balanced procedures
+
+; these two are unbalanced
+(balanced? mobile)
+(balanced? new-mobile)
+
+; this one is balanced
+(define balanced-mobile (make-mobile (make-branch 5 (make-mobile (make-branch 2 12)
+                                                                 (make-branch 8 3)
+                                                    )
+                                     )
+                                     (make-branch 3 (make-mobile (make-branch 1 20)
+                                                                 (make-branch 4 5)
+                                                    )
+                                     )
+
+                        )
+)
+balanced-mobile
+(balanced? balanced-mobile)
+
+;----(d)----
+; the higher order procedures are defined purely in terms of the interface of constructors and selectors, so they can stay precisely the same by virtue of abstraction
+; only the interface itself must be updated to hanle the new constructors
+; I introduced the new predicate (has-mobile? branch) in the interface, which must also be defined as well
+(define left-branch car)
+(define right-branch cdr)
+(define branch-length car)
+(define branch-structure cdr)
+(define (has-mobile? branch)
+        (pair? (branch-structure branch))
+)
